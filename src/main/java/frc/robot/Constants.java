@@ -63,4 +63,14 @@ public final class Constants {
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
   }
+  
+  public static class HiArmConstants {
+    public static int HIARM_MOTOR_CANID = 5;
+    public static int HIROLLER_MOTOR_CANID = 6;
+  }
+
+  public static class LoArmConstants {
+    public static int LOARM_MOTOR_CANID = 7;
+    public static int LOROLLER_MOTOR_CANID = 8;
+  }
 }
