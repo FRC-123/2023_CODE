@@ -18,12 +18,13 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.PS4Controller;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import static frc.robot.Constants.TeleopDriveConstants.DEADBAND;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.HiArmSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
@@ -40,9 +41,10 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final HiArmSubsystem m_hiArm = new HiArmSubsystem();
 
   // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  PS4Controller m_driverController = new PS4Controller(OIConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -56,8 +58,8 @@ public class RobotContainer {
         // hand, and turning controlled by the right.
         new RunCommand(
             () ->
-                m_robotDrive.arcadeDrive(
-                    modifyAxis(-m_driverController.getLeftY()), modifyAxis(-m_driverController.getRightX())),
+                m_robotDrive.tankDrive(
+                    -0.5*m_driverController.getLeftY(), -0.5*m_driverController.getRightY()),
             m_robotDrive));
   }
 
@@ -72,6 +74,15 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kRightBumper.value)
         .onTrue(new InstantCommand(() -> m_robotDrive.setMaxOutput(0.5)))
         .onFalse(new InstantCommand(() -> m_robotDrive.setMaxOutput(1)));
+    new JoystickButton(m_driverController, Button.kA.value)
+        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(0)));
+    new JoystickButton(m_driverController, Button.kY.value)
+        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(165)));
+    new JoystickButton(m_driverController, Button.kX.value)
+        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(90)));
+    new JoystickButton(m_driverController, Button.kB.value)
+        .onTrue(new InstantCommand(() -> m_hiArm.expellCone()))
+        .onFalse(new InstantCommand(() -> m_hiArm.moveRollers(0)));
   }
 
   /**
@@ -106,13 +117,13 @@ public class RobotContainer {
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+            List.of(new Translation2d(1.5, 1.5), new Translation2d(3, 0), new Translation2d(1.5, -1.5)),
             // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(3, 0, new Rotation2d(0)),
+            new Pose2d(0, 0, new Rotation2d(90)),
             // Pass config
             config);
 
-    RamseteCommand ramseteCommand =
+    /*RamseteCommand ramseteCommand =
         new RamseteCommand(
             exampleTrajectory,
             m_robotDrive::getPose,
@@ -127,7 +138,9 @@ public class RobotContainer {
             new PIDController(DriveConstants.kPDriveVel, 0, 0),
             // RamseteCommand passes volts to the callback
             m_robotDrive::tankDriveVolts,
-            m_robotDrive);
+            m_robotDrive);*/
+        RamseteCommand ramseteCommand = 
+            new RamseteCommand(exampleTrajectory, m_robotDrive::getPose, new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta), DriveConstants.kDriveKinematics, m_robotDrive::tankMetersPerSecond, m_robotDrive);
 
     // Reset odometry to the starting pose of the trajectory.
     m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());

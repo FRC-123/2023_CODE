@@ -28,8 +28,8 @@ public class HiArmSubsystem extends SubsystemBase {
   private static final double CHAIN_RAIO = 1.0;
 
   // limits in degrees rotation
-  private static final float LIMIT_BOTTOM = -5.0f;
-  private static final float LIMIT_TOP = 185.0f;
+  private static final float LIMIT_BOTTOM = -0.5f;
+  private static final float LIMIT_TOP = 165f;
 
   private final CANSparkMax HiarmMotor;
   private final SparkMaxPIDController HipidController;
@@ -67,13 +67,13 @@ public class HiArmSubsystem extends SubsystemBase {
     HipidController.setFeedbackDevice(HiarmEncoder);
 
     // Configure closed-loop control - FIX ME!!!
-    double kP = 0.0032075*60;  // .0025; 
-    double kI = 0.0;
-    double kD = 0.00028705*60; 
-    double kIz = 0.1; 
+    double kP = 0.01;  // .0025; 
+    double kI = 0.003;
+    double kD = 0.0075; 
+    double kIz = 1.0; 
     double kFF = 0;
-    double kMaxOutput = .6;
-    double kMinOutput = -.6;
+    double kMaxOutput = .25;
+    double kMinOutput = -.4;
     double allowedErr = 0.125; // Error in rotations, not radians
 
     // Smart Motion Coefficients
@@ -88,10 +88,10 @@ public class HiArmSubsystem extends SubsystemBase {
     HipidController.setFF(kFF);
     HipidController.setOutputRange(kMinOutput, kMaxOutput); 
 
-    HipidController.setSmartMotionMaxVelocity(maxVel, SMART_MOTION_SLOT);
-    HipidController.setSmartMotionMinOutputVelocity(minVel, SMART_MOTION_SLOT);
-    HipidController.setSmartMotionMaxAccel(maxAcc, SMART_MOTION_SLOT);
-    HipidController.setSmartMotionAllowedClosedLoopError(allowedErr, SMART_MOTION_SLOT);
+    // HipidController.setSmartMotionMaxVelocity(maxVel, SMART_MOTION_SLOT);
+    // HipidController.setSmartMotionMinOutputVelocity(minVel, SMART_MOTION_SLOT);
+    // HipidController.setSmartMotionMaxAccel(maxAcc, SMART_MOTION_SLOT);
+    // HipidController.setSmartMotionAllowedClosedLoopError(allowedErr, SMART_MOTION_SLOT);
 
     // Voltage compensation and current limits
     HiarmMotor.enableVoltageCompensation(12);

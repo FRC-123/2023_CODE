@@ -13,10 +13,12 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController.AccelStrategy;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -33,7 +35,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final SparkMaxPIDController leftController = leftDrive.getPIDController();
   private final SparkMaxPIDController rightController = rightDrive.getPIDController();
   // private DifferentialDriveOdometry odometry;
-  // private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.098592, 4.222, 0.24104);
+  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.098592, 4.222, 0.24104);
   // private final DifferentialDriveKinematics differentialDriveKinematics = new DifferentialDriveKinematics(0.6895);
 
   // The robot's drive
@@ -124,6 +126,7 @@ public class DriveSubsystem extends SubsystemBase {
     // Update the odometry in the periodic block
     m_odometry.update(
       m_ahrs.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
+      //SmartDashboard.putString("pose", m_odometry.getPoseMeters().toString());
   }
 
   /**
@@ -163,6 +166,10 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void arcadeDrive(double fwd, double rot) {
     m_drive.arcadeDrive(fwd, rot);
+  }
+
+  public void tankDrive(double left, double right) {
+    m_drive.tankDrive(left, right);
   }
 
   /**
@@ -240,5 +247,10 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public double getTurnRate() {
     return -m_ahrs.getRate();
+  }
+
+  public void tankMetersPerSecond(double left, double right) {
+    leftController.setReference(left, ControlType.kVelocity, 0, feedforward.calculate(left));
+    rightController.setReference(right, ControlType.kVelocity, 0, feedforward.calculate(right));
   }
 }

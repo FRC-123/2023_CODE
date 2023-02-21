@@ -18,7 +18,7 @@ public final class Constants {
   public static final class DriveConstants {
     public static final int kLeftMotor1Port = 1;
     public static final int kLeftMotor2Port = 2;
-    public static final int kRightMotor1Port = 7;
+    public static final int kRightMotor1Port = 3;
     public static final int kRightMotor2Port = 4;
 
     public static final boolean kLeftMotorReversed = false;
@@ -56,8 +56,8 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 0.5;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 0.1;
+    public static final double kMaxSpeedMetersPerSecond = 0.5; //0.5
+    public static final double kMaxAccelerationMetersPerSecondSquared = 0.3; //0.1
 
     // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
     public static final double kRamseteB = 2;
