@@ -24,12 +24,12 @@ public class LoArmSubsystem extends SubsystemBase {
 
   private static final int SMART_MOTION_SLOT = 0;
   private static final double GRAVITY_FF = 0.01;
-  private static final double GEARBOX_RATIO = 64.0;
-  private static final double CHAIN_RAIO = 1.0;
+  private static final double GEARBOX_RATIO = 16.0;
+  private static final double CHAIN_RAIO = 2.0;
 
-  // limits in degrees rotation
-  private static final float LIMIT_BOTTOM = -50.0f;
-  private static final float LIMIT_TOP = 95.0f;
+  // limits in degrees rotation approximately 122 degreess active
+  private static final float LIMIT_BOTTOM = -5.0f;
+  private static final float LIMIT_TOP = 125.0f;
 
   private final static double OBJ_INTAKE_SPEED = 0.3;
   private final static double OBJ_EXPELL_SPEED = -0.3;
@@ -65,13 +65,13 @@ public class LoArmSubsystem extends SubsystemBase {
     LopidController.setFeedbackDevice(LoarmEncoder);
 
     // Configure closed-loop control - FIX ME!!!
-    double kP = 0.0032075*60;  // .0025; 
-    double kI = 0.0;
-    double kD = 0.00028705*60; 
-    double kIz = 0.1; 
+    double kP = 0.007;
+    double kI = 0.0005;
+    double kD = 0.1;  // ???
+    double kIz = 0.5; 
     double kFF = 0;
-    double kMaxOutput = .6;
-    double kMinOutput = -.6;
+    double kMaxOutput = .5;
+    double kMinOutput = -.2;
     double allowedErr = 0.125; // Error in rotations, not radians
 
     // Smart Motion Coefficients
@@ -86,10 +86,10 @@ public class LoArmSubsystem extends SubsystemBase {
     LopidController.setFF(kFF);
     LopidController.setOutputRange(kMinOutput, kMaxOutput); 
 
-    LopidController.setSmartMotionMaxVelocity(maxVel, SMART_MOTION_SLOT);
-    LopidController.setSmartMotionMinOutputVelocity(minVel, SMART_MOTION_SLOT);
-    LopidController.setSmartMotionMaxAccel(maxAcc, SMART_MOTION_SLOT);
-    LopidController.setSmartMotionAllowedClosedLoopError(allowedErr, SMART_MOTION_SLOT);
+    // LopidController.setSmartMotionMaxVelocity(maxVel, SMART_MOTION_SLOT);
+    // LopidController.setSmartMotionMinOutputVelocity(minVel, SMART_MOTION_SLOT);
+    // LopidController.setSmartMotionMaxAccel(maxAcc, SMART_MOTION_SLOT);
+    // LopidController.setSmartMotionAllowedClosedLoopError(allowedErr, SMART_MOTION_SLOT);
 
     // Voltage compensation and current limits
     LoarmMotor.enableVoltageCompensation(12);
