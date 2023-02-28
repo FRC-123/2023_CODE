@@ -25,6 +25,7 @@ import frc.robot.Constants.OIConstants;
 import static frc.robot.Constants.TeleopDriveConstants.DEADBAND;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.HiArmSubsystem;
+import frc.robot.subsystems.LoArmSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
@@ -42,6 +43,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final HiArmSubsystem m_hiArm = new HiArmSubsystem();
+  private final LoArmSubsystem m_loArm = new LoArmSubsystem();
 
   // The driver's controller
   PS4Controller m_driverController = new PS4Controller(OIConstants.kDriverControllerPort);
@@ -75,14 +77,12 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> m_robotDrive.setMaxOutput(0.5)))
         .onFalse(new InstantCommand(() -> m_robotDrive.setMaxOutput(1)));
     new JoystickButton(m_driverController, Button.kA.value)
-        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(0)));
+        .onTrue(new InstantCommand(() -> m_loArm.moveToPosition(0)));
     new JoystickButton(m_driverController, Button.kY.value)
-        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(165)));
-    new JoystickButton(m_driverController, Button.kX.value)
-        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(90)));
+        .onTrue(new InstantCommand(() -> m_loArm.moveToPosition(110)));
     new JoystickButton(m_driverController, Button.kB.value)
-        .onTrue(new InstantCommand(() -> m_hiArm.expellCone()))
-        .onFalse(new InstantCommand(() -> m_hiArm.moveRollers(0)));
+        .onTrue(new InstantCommand(() -> m_loArm.intakeObj()))
+        .onFalse(new InstantCommand(() -> m_loArm.stopRollers()));
   }
 
   /**

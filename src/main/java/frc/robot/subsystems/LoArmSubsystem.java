@@ -71,7 +71,7 @@ public class LoArmSubsystem extends SubsystemBase {
     double kIz = 0.5; 
     double kFF = 0;
     double kMaxOutput = .5;
-    double kMinOutput = -.2;
+    double kMinOutput = -.5;
     double allowedErr = 0.125; // Error in rotations, not radians
 
     // Smart Motion Coefficients
