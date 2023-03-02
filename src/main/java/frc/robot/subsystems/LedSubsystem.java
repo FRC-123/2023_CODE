@@ -12,8 +12,6 @@ public class LedSubsystem extends SubsystemBase {
     // don't know if its better to declare a bunch of static buffers (20 x 3 bytes
     // each) for each "message", or iterate over a background buffer and swap with
     // active display
-    private static AddressableLEDBuffer led_red_alliance;
-    private static AddressableLEDBuffer led_blue_alliance;
     private static AddressableLEDBuffer led_our_alliance;
     private static AddressableLEDBuffer led_blank;
     private static AddressableLEDBuffer led_cube_req;
