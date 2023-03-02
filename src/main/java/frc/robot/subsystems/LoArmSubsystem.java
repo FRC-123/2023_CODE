@@ -40,7 +40,7 @@ public class LoArmSubsystem extends SubsystemBase {
 
   private final CANSparkMax LoRollerMotor;
 
-  private Double LotargetPosition = null;
+  private Double LotargetPosition = 0.0;
 
   public LoArmSubsystem() {
 
@@ -198,4 +198,7 @@ public class LoArmSubsystem extends SubsystemBase {
     LotargetPosition = LoarmEncoder.getPosition();
   }
 
+  public boolean atPoint() {
+    return Math.abs(LotargetPosition - getArmPosition()) < 5;
+  }
 }

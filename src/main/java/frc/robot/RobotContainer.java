@@ -77,9 +77,11 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> m_robotDrive.setMaxOutput(0.5)))
         .onFalse(new InstantCommand(() -> m_robotDrive.setMaxOutput(1)));
     new JoystickButton(m_driverController, Button.kA.value)
-        .onTrue(new InstantCommand(() -> m_loArm.moveToPosition(0)));
+        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(0)));
     new JoystickButton(m_driverController, Button.kY.value)
-        .onTrue(new InstantCommand(() -> m_loArm.moveToPosition(110)));
+        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(120)));
+    new JoystickButton(m_driverController, Button.kX.value)
+        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(50)));
     new JoystickButton(m_driverController, Button.kB.value)
         .onTrue(new InstantCommand(() -> m_loArm.intakeObj()))
         .onFalse(new InstantCommand(() -> m_loArm.stopRollers()));

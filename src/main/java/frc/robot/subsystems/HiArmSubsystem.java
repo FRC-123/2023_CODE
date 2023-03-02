@@ -13,6 +13,7 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HiArmConstants;
@@ -42,7 +43,9 @@ public class HiArmSubsystem extends SubsystemBase {
   private final static double CONE_INTAKE_SPEED = -0.3;
   private final static double CONE_EXPELL_SPEED = 0.3;
 
-  private Double HitargetPosition = null;
+  private final static DigitalInput HiProx = new DigitalInput(0);
+
+  private Double HitargetPosition = 0.0;
 
   public HiArmSubsystem() {
 
@@ -70,7 +73,7 @@ public class HiArmSubsystem extends SubsystemBase {
     double kP = 0.01;  // .0025; 
     double kI = 0.003;
     double kD = 0.0075; 
-    double kIz = 1.0; 
+    double kIz = 0.5; 
     double kFF = 0;
     double kMaxOutput = .25;
     double kMinOutput = -.4;
@@ -129,6 +132,7 @@ public class HiArmSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("Arm Setpoint",targetPosition);
     SmartDashboard.putNumber("HiArm Position Raw", HiarmEncoder.getPosition());
     SmartDashboard.putNumber("HiArm Output", HiarmMotor.getAppliedOutput());
+    SmartDashboard.putBoolean("atpoint", atPoint());
   }
 
   /**
@@ -216,4 +220,7 @@ public class HiArmSubsystem extends SubsystemBase {
     HitargetPosition = HiarmEncoder.getPosition();
   }
 
+  public boolean atPoint() {
+    return Math.abs(HitargetPosition - getArmPosition()) < 5;
+  }
 }
