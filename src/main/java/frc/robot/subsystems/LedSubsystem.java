@@ -28,6 +28,15 @@ public class LedSubsystem extends SubsystemBase {
         led_bar = new AddressableLED(0);
         led_bar.setLength(20);
 
+        our_alliance = DriverStation.getAlliance();     // maybe need to check this in disabled to see if it changed
+// //    DriverStation.Alliance color;
+// color = DriverStation.getAlliance();
+// if(color == DriverStation.Alliance.Blue){
+// //                       RobotContainer.isRedAlliance = false;
+// }else {
+// //                       RobotContainer.isRedAlliance = true;
+// }
+
         // allocate buffers
 
         led_our_alliance = new AddressableLEDBuffer(20);
