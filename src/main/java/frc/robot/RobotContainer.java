@@ -7,8 +7,6 @@ package frc.robot;
 import static edu.wpi.first.wpilibj.XboxController.Button;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,7 +20,6 @@ import edu.wpi.first.wpilibj.PS4Controller;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import static frc.robot.Constants.TeleopDriveConstants.DEADBAND;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.HiArmSubsystem;
 import frc.robot.subsystems.LoArmSubsystem;
@@ -32,8 +29,6 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JacksonInject.Value;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -63,8 +58,9 @@ public class RobotContainer {
         new RunCommand(
             () ->
                 m_robotDrive.tankDrive(
-                    -0.5*m_driverController.getLeftY(), -0.5*m_driverController.getRightY()),
-            m_robotDrive));
+                    // -0.5*m_driverController.getLeftY(), -0.5*m_driverController.getRightY()),
+                    modifyAxis(m_driverController.getLeftY(),0.05,1.0), modifyAxis(m_driverController.getRightY(),0.05,1.0)),
+                    m_robotDrive));
   }
 
   /**
