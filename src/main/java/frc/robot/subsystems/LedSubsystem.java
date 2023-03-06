@@ -21,7 +21,7 @@ public class LedSubsystem extends SubsystemBase {
     private static AddressableLEDBuffer led_dynamic_msg;    // possible blinking message
     private static int dynamic_count = 0;   // internal counter for dynamic method
     // Store what the last hue of the first pixel is
-    private int m_rainbowFirstPixelHue = 0; 
+    private static int m_rainbowFirstPixelHue = 0; 
 
     /**
      * 
@@ -66,35 +66,35 @@ public class LedSubsystem extends SubsystemBase {
     /**
      * 
      */
-    public void stop_led_bar() {
+    public static void stop_led_bar() {
         led_bar.stop();
     }
 
     /**
      * 
      */
-    public void start_led_bar() {
+    public static void start_led_bar() {
         led_bar.start();
     }
 
     /**
      * 
      */
-    public void set_blank_msg() {
+    public static void set_blank_msg() {
         led_bar.setData(led_blank);
     }
 
     /**
      * 
      */
-    public void set_red_blue_msg() {
+    public static void set_red_blue_msg() {
         led_bar.setData(led_red_blue);
     }
 
     /**
      * 
      */
-    public void set_green_msg() {
+    public static void set_green_msg() {
         led_bar.setData(led_green);
     }
 
@@ -102,7 +102,7 @@ public class LedSubsystem extends SubsystemBase {
     /**
      * intended to be called once at start of teleop & auton enable
      */
-    public void set_our_alliance_solid() {
+    public static void set_our_alliance_solid() {
         DriverStation.Alliance our_alliance = DriverStation.getAlliance();
         if ( our_alliance == DriverStation.Alliance.Red ) {
             led_bar.setData(led_red_alliance);
@@ -119,7 +119,7 @@ public class LedSubsystem extends SubsystemBase {
         // }
     }
 
-    private void rainbow() {
+    private static void rainbow() {
         // For every pixel
         for (var i = 0; i < led_dynamic_msg.getLength(); i++) {
           // Calculate the hue - hue is easier for rainbows because the color
@@ -137,7 +137,7 @@ public class LedSubsystem extends SubsystemBase {
     /**
      * 
      */
-    public void set_dynamic_message() {
+    public static void set_dynamic_message() {
         if ( dynamic_count < 1000 ) {
             dynamic_count++;
         }
@@ -148,14 +148,14 @@ public class LedSubsystem extends SubsystemBase {
     /**
      * 
      */
-    public void set_cube_req() {
+    public static void set_cube_req() {
         led_bar.setData(led_cube_req);
     }
 
     /**
      * 
      */
-    public void set_cone_req() {
+    public static void set_cone_req() {
         led_bar.setData(led_cone_req);
     }
 
