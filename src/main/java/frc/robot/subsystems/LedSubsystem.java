@@ -1,24 +1,27 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.DriverStation;
-
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LedSubsystem extends SubsystemBase {
     private static AddressableLED led_bar;
     // don't know if its better to declare a bunch of static buffers (20 x 3 bytes
     // each) for each "message", or iterate over a background buffer and swap with
     // active display
+    private static AddressableLEDBuffer led_red_alliance;    
+    private static AddressableLEDBuffer led_blue_alliance;
+    private static AddressableLEDBuffer led_red_blue;   
     private static AddressableLEDBuffer led_blank;
+    private static AddressableLEDBuffer led_green;
     private static AddressableLEDBuffer led_cube_req;
     private static AddressableLEDBuffer led_cone_req;
-    private static AddressableLEDBuffer led_red_bar;
-    private static AddressableLEDBuffer led_blue_bar;
-    private static DriverStation.Alliance our_alliance;
-
+    private static AddressableLEDBuffer led_dynamic_msg;    // possible blinking message
+    private static int dynamic_count = 0;   // internal counter for dynamic method
+    // Store what the last hue of the first pixel is
+    private static int m_rainbowFirstPixelHue = 0; 
 
     /**
      * 
@@ -29,75 +32,130 @@ public class LedSubsystem extends SubsystemBase {
         led_bar = new AddressableLED(0);
         led_bar.setLength(20);
 
-        our_alliance = DriverStation.getAlliance();     // maybe need to check this in disabled to see if it changed
-// //    DriverStation.Alliance color;
-// color = DriverStation.getAlliance();
-// if(color == DriverStation.Alliance.Blue){
-// //                       RobotContainer.isRedAlliance = false;
-// }else {
-// //                       RobotContainer.isRedAlliance = true;
-// }
-
         // allocate buffers
-        led_red_bar = new AddressableLEDBuffer(20);
-        led_blue_bar = new AddressableLEDBuffer(20);
+
+        led_red_alliance = new AddressableLEDBuffer(20);
+        led_blue_alliance = new AddressableLEDBuffer(20);
+        led_red_blue = new AddressableLEDBuffer(20);
         led_blank = new AddressableLEDBuffer(20);
         led_cube_req = new AddressableLEDBuffer(20);
         led_cone_req = new AddressableLEDBuffer(20);
+        led_dynamic_msg = new AddressableLEDBuffer(20);
+        led_green = new AddressableLEDBuffer(20);
 
         // init message buffers
         for (int i = 0; i < 20; i++) {
             // pre-set all message buffers during init
-            led_red_bar.setLED(i, Color.kFirstRed);
-            led_blue_bar.setLED(i, Color.kFirstBlue);
+            led_red_alliance.setLED(i, Color.kFirstRed);
+            led_blue_alliance.setLED(i, Color.kFirstBlue);
+            led_green.setLED(i, Color.kGreen);
+            if ( ((i&3)==0) || ((i&3)==2)) { // alternate every 4 pixels
+                led_red_blue.setLED(i, Color.kFirstRed);
+            } else {
+                led_red_blue.setLED(i, Color.kFirstBlue);
+            }
             led_blank.setLED(i, Color.kBlack);
+            led_dynamic_msg.setLED(i, Color.kBlack);
             led_cube_req.setLED(i, Color.kDarkViolet); // cube color req
             led_cone_req.setLED(i, Color.kGold); // cone color req
         }
-        led_bar.setData(led_blank);
+        led_bar.setData(led_red_blue);
         led_bar.start(); // optionally stop during disable, start on enable transition?
     }
 
     /**
      * 
      */
-    public void stop_led_bar() {
+    public static void stop_led_bar() {
         led_bar.stop();
     }
 
     /**
      * 
      */
-    public void start_led_bar() {
+    public static void start_led_bar() {
         led_bar.start();
     }
 
     /**
      * 
      */
-    public void set_our_alliance_solid() {
-        if(our_alliance == DriverStation.Alliance.Blue) {
-            led_bar.setData(led_blue_bar);
-        }
-        else if(our_alliance == DriverStation.Alliance.Red) {
-            led_bar.setData(led_red_bar);
-        }
-        else {
-            led_bar.setData(led_blank);
-        }
+    public static void set_blank_msg() {
+        led_bar.setData(led_blank);
     }
 
     /**
      * 
      */
-    public void set_cube_req() {
+    public static void set_red_blue_msg() {
+        led_bar.setData(led_red_blue);
+    }
+
+    /**
+     * 
+     */
+    public static void set_green_msg() {
+        led_bar.setData(led_green);
+    }
+
+
+    /**
+     * intended to be called once at start of teleop & auton enable
+     */
+    public static void set_our_alliance_solid() {
+        DriverStation.Alliance our_alliance = DriverStation.getAlliance();
+        if ( our_alliance == DriverStation.Alliance.Red ) {
+            led_bar.setData(led_red_alliance);
+        } else if ( our_alliance == DriverStation.Alliance.Blue ) {
+            led_bar.setData(led_blue_alliance);
+        } else {    // invalid
+            led_bar.setData(led_red_blue);
+        }
+    // or with boolean isRedAlliance as argument...
+        // if ( isRedAlliance ) {
+        //     led_bar.setData(led_red_alliance);
+        // } else {
+        //     led_bar.setData(led_blue_alliance);
+        // }
+    }
+
+    private static void rainbow() {
+        // For every pixel
+        for (var i = 0; i < led_dynamic_msg.getLength(); i++) {
+          // Calculate the hue - hue is easier for rainbows because the color
+          // shape is a circle so only one value needs to precess
+          final var hue = (m_rainbowFirstPixelHue + (i * 180 / led_dynamic_msg.getLength())) % 180;
+          // Set the value
+          led_dynamic_msg.setHSV(i, hue, 255, 128);
+        }
+        // Increase by to make the rainbow "move"
+        m_rainbowFirstPixelHue += 3;
+        // Check bounds
+        m_rainbowFirstPixelHue %= 180;
+    }
+    
+    /**
+     * 
+     */
+    public static void set_dynamic_message() {
+        if ( dynamic_count < 1000 ) {
+            dynamic_count++;
+        }
+        rainbow();  // or do something else fancy to dynamic mesg here...
+        led_bar.setData(led_dynamic_msg);
+    }
+
+    /**
+     * 
+     */
+    public static void set_cube_req() {
         led_bar.setData(led_cube_req);
     }
 
     /**
      * 
      */
-    public void set_cone_req() {
+    public static void set_cone_req() {
         led_bar.setData(led_cone_req);
     }
 

@@ -7,8 +7,6 @@ package frc.robot;
 import static edu.wpi.first.wpilibj.XboxController.Button;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -147,14 +145,22 @@ public class RobotContainer {
     return ramseteCommand.andThen(() -> m_robotDrive.tankDriveVolts(0, 0));
   }
 
-    private static double modifyAxis(double value) {
-        // Deadband
-        value = MathUtil.applyDeadband(value, DEADBAND);
+    /**
+     * @param value
+     * @param deadband
+     * @param maxMagnitude
+     * @return
+     */
+    private static double modifyAxis(double value, double deadband, double maxMagnitude) {
+        
+        // validate input
+        double joyout = MathUtil.clamp(Math.abs(value),0.0,1.0);
+        // apply deadband, scale remaining range 0..maxMagnitude
+        joyout = MathUtil.applyDeadband(joyout, deadband, maxMagnitude);
+        // square input, restore sign
+        joyout = Math.copySign(joyout*joyout, value);
 
-        // Square the axis
-        value = Math.copySign(value * value, value);
-
-        return value;
+        return joyout;
     }
 
 }
