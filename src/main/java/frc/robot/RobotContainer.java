@@ -76,6 +76,10 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(170)));
     new JoystickButton(m_driverController, Button.kX.value)
         .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(50)));
+    new JoystickButton(m_driverController, Button.kLeftBumper.value)
+        .onTrue(new InstantCommand(() -> LedSubsystem.toggle_cube()));
+    new JoystickButton(m_driverController, Button.kRightBumper.value)
+        .onTrue(new InstantCommand(() -> LedSubsystem.toggle_cone()));
 
 
     // Led bar triggers

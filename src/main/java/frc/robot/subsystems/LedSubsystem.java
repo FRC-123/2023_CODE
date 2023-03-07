@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -11,6 +12,7 @@ public class LedSubsystem extends SubsystemBase {
     // don't know if its better to declare a bunch of static buffers (20 x 3 bytes
     // each) for each "message", or iterate over a background buffer and swap with
     // active display
+    private static LedState currenState;
     private static AddressableLEDBuffer led_red_alliance;    
     private static AddressableLEDBuffer led_blue_alliance;
     private static AddressableLEDBuffer led_red_blue;   
@@ -55,6 +57,7 @@ public class LedSubsystem extends SubsystemBase {
             led_cone_req.setLED(i, Color.kGold); // cone color req
         }
         led_bar.setData(led_red_blue);
+        currenState = LedState.Alliance;
         led_bar.start(); // optionally stop during disable, start on enable transition?
     }
     /**
@@ -116,6 +119,7 @@ public class LedSubsystem extends SubsystemBase {
      */
     public static void set_blank_msg() {
         led_bar.setData(led_blank);
+        currenState = LedState.Alliance;
     }
 
     /**
@@ -123,6 +127,7 @@ public class LedSubsystem extends SubsystemBase {
      */
     public static void set_red_blue_msg() {
         led_bar.setData(led_red_blue);
+        currenState = LedState.Alliance;
     }
 
     /**
@@ -130,6 +135,7 @@ public class LedSubsystem extends SubsystemBase {
      */
     public static void set_green_msg() {
         led_bar.setData(led_green);
+        currenState = LedState.Alliance;
     }
 
 
@@ -151,6 +157,7 @@ public class LedSubsystem extends SubsystemBase {
         // } else {
         //     led_bar.setData(led_blue_alliance);
         // }
+        currenState = LedState.Alliance;
     }
 
     private static void rainbow() {
@@ -177,6 +184,7 @@ public class LedSubsystem extends SubsystemBase {
         }
         rainbow();  // or do something else fancy to dynamic mesg here...
         led_bar.setData(led_dynamic_msg);
+        currenState = LedState.Alliance;
     }
 
     /**
@@ -184,6 +192,7 @@ public class LedSubsystem extends SubsystemBase {
      */
     public static void set_cube_req() {
         led_bar.setData(led_cube_req);
+        currenState = LedState.Cube;
     }
 
     /**
@@ -191,5 +200,30 @@ public class LedSubsystem extends SubsystemBase {
      */
     public static void set_cone_req() {
         led_bar.setData(led_cone_req);
+        currenState = LedState.Cone;
     }
+
+    public static void toggle_cone() {
+        if(currenState == LedState.Cone) {
+            set_our_alliance_solid();
+        }
+        else {
+            set_cone_req();
+        }
+    }
+
+    public static void toggle_cube() {
+        if(currenState == LedState.Cube) {
+            set_our_alliance_solid();
+        }
+        else {
+            set_cube_req();
+        }
+    }
+}
+
+enum LedState {
+    Alliance,
+    Cone,
+    Cube
 }
