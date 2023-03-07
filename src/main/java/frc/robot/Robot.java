@@ -20,7 +20,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  private LedSubsystem m_led_subsystem; // we need an instance to run during init
+  //private LedSubsystem m_led_subsystem; // we need an instance to run during init
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    m_led_subsystem = new LedSubsystem();   // create an instance, which will initialize all buffers etc
+    //m_led_subsystem = new LedSubsystem();   // create an instance, which will initialize all buffers etc
     // addPeriodic(() -> our_alliance = DriverStation.getAlliance(), 1);
   }
 

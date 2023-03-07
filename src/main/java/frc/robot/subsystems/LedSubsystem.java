@@ -23,6 +23,40 @@ public class LedSubsystem extends SubsystemBase {
     // Store what the last hue of the first pixel is
     private static int m_rainbowFirstPixelHue = 0; 
 
+    static {
+        led_bar = new AddressableLED(0);
+        led_bar.setLength(20);
+
+        // allocate buffers
+
+        led_red_alliance = new AddressableLEDBuffer(20);
+        led_blue_alliance = new AddressableLEDBuffer(20);
+        led_red_blue = new AddressableLEDBuffer(20);
+        led_blank = new AddressableLEDBuffer(20);
+        led_cube_req = new AddressableLEDBuffer(20);
+        led_cone_req = new AddressableLEDBuffer(20);
+        led_dynamic_msg = new AddressableLEDBuffer(20);
+        led_green = new AddressableLEDBuffer(20);
+
+        // init message buffers
+        for (int i = 0; i < 20; i++) {
+            // pre-set all message buffers during init
+            led_red_alliance.setLED(i, Color.kFirstRed);
+            led_blue_alliance.setLED(i, Color.kFirstBlue);
+            led_green.setLED(i, Color.kGreen);
+            if ( ((i&3)==0) || ((i&3)==2)) { // alternate every 4 pixels
+                led_red_blue.setLED(i, Color.kFirstRed);
+            } else {
+                led_red_blue.setLED(i, Color.kFirstBlue);
+            }
+            led_blank.setLED(i, Color.kBlack);
+            led_dynamic_msg.setLED(i, Color.kBlack);
+            led_cube_req.setLED(i, Color.kDarkViolet); // cube color req
+            led_cone_req.setLED(i, Color.kGold); // cone color req
+        }
+        led_bar.setData(led_red_blue);
+        led_bar.start(); // optionally stop during disable, start on enable transition?
+    }
     /**
      * 
      */
@@ -158,10 +192,4 @@ public class LedSubsystem extends SubsystemBase {
     public static void set_cone_req() {
         led_bar.setData(led_cone_req);
     }
-
-    @Override
-    public void periodic() {
-        our_alliance = DriverStation.getAlliance();
-    }
-
 }
