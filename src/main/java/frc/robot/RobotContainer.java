@@ -70,18 +70,22 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Drive at half speed when the right bumper is held
-    new JoystickButton(m_driverController, Button.kA.value)
-        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(0)));
-    new JoystickButton(m_driverController, Button.kY.value)
-        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(170)));
-    new JoystickButton(m_driverController, Button.kX.value)
-        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(50)));
+    new JoystickButton(m_armController, Button.kA.value)
+        .onTrue(new InstantCommand(() -> m_loArm.moveToPosition(0)));
+    new JoystickButton(m_armController, Button.kY.value)
+        .onTrue(new InstantCommand(() -> m_loArm.moveToPosition(90)));
+    new JoystickButton(m_armController, Button.kX.value)
+        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(60)));
     new JoystickButton(m_driverController, Button.kLeftBumper.value)
         .onTrue(new InstantCommand(() -> LedSubsystem.toggle_cube()));
     new JoystickButton(m_driverController, Button.kRightBumper.value)
         .onTrue(new InstantCommand(() -> LedSubsystem.toggle_cone()));
-
-
+    new JoystickButton(m_armController, Button.kRightBumper.value)
+        .onTrue(new InstantCommand(() -> m_hiArm.intakeCone()))
+        .onFalse(new InstantCommand(() -> m_hiArm.stopRollers()));
+    new JoystickButton(m_armController, Button.kLeftBumper.value)
+        .onTrue(new InstantCommand(() ->  m_loArm.moveRollers(-0.6)))
+        .onFalse(new InstantCommand(() -> m_loArm.stopRollers()));
     // Led bar triggers
   }
 

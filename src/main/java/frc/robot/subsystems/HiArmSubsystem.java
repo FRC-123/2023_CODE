@@ -29,8 +29,8 @@ public class HiArmSubsystem extends SubsystemBase {
   private static final double CHAIN_RAIO = 1.0;
 
   // limits in degrees rotation
-  private static final float LIMIT_BOTTOM = -0.5f;
-  private static final float LIMIT_TOP = 165f;
+  private static final float LIMIT_BOTTOM = -3f;
+  private static final float LIMIT_TOP = 170f;
 
   private final CANSparkMax HiarmMotor;
   private final SparkMaxPIDController HipidController;
@@ -70,13 +70,13 @@ public class HiArmSubsystem extends SubsystemBase {
     HipidController.setFeedbackDevice(HiarmEncoder);
 
     // Configure closed-loop control - FIX ME!!!
-    double kP = 0.015;  // .0025; 
-    double kI = 0.003;
-    double kD = 0.0075; 
-    double kIz = 0.5; 
+    double kP = 0.0075;  // .0025; 
+    double kI = 0.005;
+    double kD = 0.02; 
+    double kIz = 1.0; 
     double kFF = 0;
-    double kMaxOutput = .25;
-    double kMinOutput = -.4;
+    double kMaxOutput = .4;
+    double kMinOutput = -.25;
     double allowedErr = 0.125; // Error in rotations, not radians
 
     // Smart Motion Coefficients

@@ -13,6 +13,7 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LoArmConstants;
@@ -29,10 +30,10 @@ public class LoArmSubsystem extends SubsystemBase {
 
   // limits in degrees rotation approximately 122 degreess active
   private static final float LIMIT_BOTTOM = -5.0f;
-  private static final float LIMIT_TOP = 125.0f;
+  private static final float LIMIT_TOP = 95.0f;
 
-  private final static double OBJ_INTAKE_SPEED = 0.3;
-  private final static double OBJ_EXPELL_SPEED = -0.3;
+  private final static double OBJ_INTAKE_SPEED = -0.35;
+  private final static double OBJ_EXPELL_SPEED = 0.3;
 
   private final CANSparkMax LoarmMotor;
   private final SparkMaxPIDController LopidController;
@@ -41,6 +42,8 @@ public class LoArmSubsystem extends SubsystemBase {
   private final CANSparkMax LoRollerMotor;
 
   private Double LotargetPosition = 0.0;
+
+  private final static DigitalInput LoProx = new DigitalInput(1);
 
   public LoArmSubsystem() {
 
@@ -65,12 +68,12 @@ public class LoArmSubsystem extends SubsystemBase {
     LopidController.setFeedbackDevice(LoarmEncoder);
 
     // Configure closed-loop control - FIX ME!!!
-    double kP = 0.007;
+    double kP = 0.005;
     double kI = 0.0005;
     double kD = 0.1;  // ???
     double kIz = 0.5; 
     double kFF = 0;
-    double kMaxOutput = .5;
+    double kMaxOutput = .15;
     double kMinOutput = -.5;
     double allowedErr = 0.125; // Error in rotations, not radians
 
