@@ -62,7 +62,6 @@ public class RobotContainer {
     // Configure default commands
     // Set the default drive command to split-stick arcade drive
     m_robotDrive.setDefaultCommand(new DefaultDriveCommand(m_robotDrive));
-    m_led.set_our_alliance_solid();
   }
 
   /**
@@ -82,8 +81,6 @@ public class RobotContainer {
 
 
     // Led bar triggers
-    new JoystickButton(m_driverController, Button.kB.value).onTrue(new InstantCommand(() -> m_led.set_cone_req()));
-    new JoystickButton(m_driverController, Button.kRightBumper.value).onTrue(new InstantCommand(() -> m_led.set_cube_req()));
   }
 
   /**
