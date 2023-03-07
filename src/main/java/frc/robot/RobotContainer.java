@@ -19,12 +19,16 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.PS4Controller;
+import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.DefaultDriveCommand;
+
 import static frc.robot.Constants.TeleopDriveConstants.DEADBAND;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.HiArmSubsystem;
+import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.LoArmSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -44,9 +48,11 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final HiArmSubsystem m_hiArm = new HiArmSubsystem();
   private final LoArmSubsystem m_loArm = new LoArmSubsystem();
+  private final LedSubsystem m_led = new LedSubsystem();
 
   // The driver's controller
-  PS4Controller m_driverController = new PS4Controller(OIConstants.kDriverControllerPort);
+  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  XboxController m_armController = new XboxController(OIConstants.kArmControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -55,14 +61,8 @@ public class RobotContainer {
 
     // Configure default commands
     // Set the default drive command to split-stick arcade drive
-    m_robotDrive.setDefaultCommand(
-        // A split-stick arcade command, with forward/backward controlled by the left
-        // hand, and turning controlled by the right.
-        new RunCommand(
-            () ->
-                m_robotDrive.tankDrive(
-                    -0.5*m_driverController.getLeftY(), -0.5*m_driverController.getRightY()),
-            m_robotDrive));
+    m_robotDrive.setDefaultCommand(new DefaultDriveCommand(m_robotDrive));
+    m_led.set_our_alliance_solid();
   }
 
   /**
@@ -73,18 +73,17 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Drive at half speed when the right bumper is held
-    new JoystickButton(m_driverController, Button.kRightBumper.value)
-        .onTrue(new InstantCommand(() -> m_robotDrive.setMaxOutput(0.5)))
-        .onFalse(new InstantCommand(() -> m_robotDrive.setMaxOutput(1)));
     new JoystickButton(m_driverController, Button.kA.value)
         .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(0)));
     new JoystickButton(m_driverController, Button.kY.value)
-        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(120)));
+        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(170)));
     new JoystickButton(m_driverController, Button.kX.value)
         .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(50)));
-    new JoystickButton(m_driverController, Button.kB.value)
-        .onTrue(new InstantCommand(() -> m_loArm.intakeObj()))
-        .onFalse(new InstantCommand(() -> m_loArm.stopRollers()));
+
+
+    // Led bar triggers
+    new JoystickButton(m_driverController, Button.kB.value).onTrue(new InstantCommand(() -> m_led.set_cone_req()));
+    new JoystickButton(m_driverController, Button.kRightBumper.value).onTrue(new InstantCommand(() -> m_led.set_cube_req()));
   }
 
   /**

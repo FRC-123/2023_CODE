@@ -12,10 +12,11 @@ public class LedSubsystem extends SubsystemBase {
     // don't know if its better to declare a bunch of static buffers (20 x 3 bytes
     // each) for each "message", or iterate over a background buffer and swap with
     // active display
-    private static AddressableLEDBuffer led_our_alliance;
     private static AddressableLEDBuffer led_blank;
     private static AddressableLEDBuffer led_cube_req;
     private static AddressableLEDBuffer led_cone_req;
+    private static AddressableLEDBuffer led_red_bar;
+    private static AddressableLEDBuffer led_blue_bar;
     private static DriverStation.Alliance our_alliance;
 
 
@@ -38,8 +39,8 @@ public class LedSubsystem extends SubsystemBase {
 // }
 
         // allocate buffers
-
-        led_our_alliance = new AddressableLEDBuffer(20);
+        led_red_bar = new AddressableLEDBuffer(20);
+        led_blue_bar = new AddressableLEDBuffer(20);
         led_blank = new AddressableLEDBuffer(20);
         led_cube_req = new AddressableLEDBuffer(20);
         led_cone_req = new AddressableLEDBuffer(20);
@@ -47,13 +48,8 @@ public class LedSubsystem extends SubsystemBase {
         // init message buffers
         for (int i = 0; i < 20; i++) {
             // pre-set all message buffers during init
-            if ( our_alliance == DriverStation.Alliance.Red ) {
-                led_our_alliance.setLED(i, Color.kFirstRed);
-            } else if ( our_alliance == DriverStation.Alliance.Blue ) {
-                led_our_alliance.setLED(i, Color.kFirstBlue);
-            } else {    // invalid
-                led_our_alliance.setLED(i, Color.kGreen);   // as a warning
-            }
+            led_red_bar.setLED(i, Color.kFirstRed);
+            led_blue_bar.setLED(i, Color.kFirstBlue);
             led_blank.setLED(i, Color.kBlack);
             led_cube_req.setLED(i, Color.kDarkViolet); // cube color req
             led_cone_req.setLED(i, Color.kGold); // cone color req
@@ -80,7 +76,15 @@ public class LedSubsystem extends SubsystemBase {
      * 
      */
     public void set_our_alliance_solid() {
-        led_bar.setData(led_our_alliance);
+        if(our_alliance == DriverStation.Alliance.Blue) {
+            led_bar.setData(led_blue_bar);
+        }
+        else if(our_alliance == DriverStation.Alliance.Red) {
+            led_bar.setData(led_red_bar);
+        }
+        else {
+            led_bar.setData(led_blank);
+        }
     }
 
     /**
@@ -95,6 +99,11 @@ public class LedSubsystem extends SubsystemBase {
      */
     public void set_cone_req() {
         led_bar.setData(led_cone_req);
+    }
+
+    @Override
+    public void periodic() {
+        our_alliance = DriverStation.getAlliance();
     }
 
 }

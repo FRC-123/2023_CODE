@@ -70,7 +70,7 @@ public class HiArmSubsystem extends SubsystemBase {
     HipidController.setFeedbackDevice(HiarmEncoder);
 
     // Configure closed-loop control - FIX ME!!!
-    double kP = 0.01;  // .0025; 
+    double kP = 0.015;  // .0025; 
     double kI = 0.003;
     double kD = 0.0075; 
     double kIz = 0.5; 
