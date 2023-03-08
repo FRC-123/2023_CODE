@@ -16,7 +16,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
-import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -32,6 +31,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import java.util.List;
 
 /**
@@ -74,17 +75,35 @@ public class RobotContainer {
     new JoystickButton(m_armController, Button.kY.value)
         .onTrue(new InstantCommand(() -> m_loArm.moveToPosition(90)));
     new JoystickButton(m_armController, Button.kX.value)
-        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(60)));
-    new JoystickButton(m_driverController, Button.kLeftBumper.value)
-        .onTrue(new InstantCommand(() -> LedSubsystem.toggle_cube()));
-    new JoystickButton(m_driverController, Button.kRightBumper.value)
-        .onTrue(new InstantCommand(() -> LedSubsystem.toggle_cone()));
+        .onTrue(new InstantCommand(() -> m_loArm.moveToPosition(60)));
+    
     new JoystickButton(m_armController, Button.kRightBumper.value)
         .onTrue(new InstantCommand(() -> m_hiArm.intakeCone()))
         .onFalse(new InstantCommand(() -> m_hiArm.stopRollers()));
     new JoystickButton(m_armController, Button.kLeftBumper.value)
-        .onTrue(new InstantCommand(() ->  m_loArm.moveRollers(-0.6)))
+        .onTrue(new InstantCommand(() -> m_loArm.moveRollers(-0.6)))
         .onFalse(new InstantCommand(() -> m_loArm.stopRollers()));
+
+    new JoystickButton(m_armController, Button.kRightBumper.value)
+        .onTrue(new InstantCommand(() -> m_hiArm.intakeCube(), m_hiArm))
+        .onFalse(new InstantCommand(() -> m_hiArm.stopRollers(), m_hiArm));
+    new Trigger(this::rightTrigger)
+        .onTrue(new InstantCommand(() -> m_hiArm.expellCube(), m_hiArm))
+        .onFalse(new InstantCommand(() -> m_hiArm.stopRollers(), m_hiArm));
+    new JoystickButton(m_armController, Button.kLeftBumper.value)
+        .onTrue(new InstantCommand(() -> m_loArm.intakeObj(), m_loArm))
+        .onFalse(new InstantCommand(() -> m_loArm.stopRollers(), m_loArm));
+    new Trigger(this::leftTrigger)
+        .onTrue(new InstantCommand(() -> m_loArm.expellObj(), m_loArm))
+        .onFalse(new InstantCommand(() -> m_loArm.stopRollers(), m_loArm));
+    new JoystickButton(m_driverController, Button.kLeftBumper.value)
+        .onTrue(new InstantCommand(() -> LedSubsystem.toggle_cube()));
+    new JoystickButton(m_driverController, Button.kRightBumper.value)
+        .onTrue(new InstantCommand(() -> LedSubsystem.toggle_cone()));
+    new Trigger(this::R1Down)
+        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(0)));
+    new Trigger(this::R1Up)
+        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(165)));
     // Led bar triggers
   }
 
@@ -169,6 +188,17 @@ public class RobotContainer {
 
         return joyout;
     }
-
+    private boolean leftTrigger() {
+        return m_armController.getRawAxis(2) > 0.75;
+    }
+    private boolean rightTrigger() {
+        return m_armController.getRawAxis(3) > 0.75;
+    }
+    private boolean R1Down() {
+        return m_armController.getRawAxis(5) > 0.75;
+    }
+    private boolean R1Up() {
+        return m_armController.getRawAxis(5) < -0.75;
+    }
 }
 

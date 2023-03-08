@@ -38,14 +38,15 @@ public class HiArmSubsystem extends SubsystemBase {
 
   private final CANSparkMax HiRollerMotor;
 
-  private final static double CUBE_INTAKE_SPEED = 0.3;
-  private final static double CUBE_EXPELL_SPEED = -0.3;
+  private final static double CUBE_INTAKE_SPEED = 0.5;
+  private final static double CUBE_EXPELL_SPEED = -0.15;
   private final static double CONE_INTAKE_SPEED = -0.3;
   private final static double CONE_EXPELL_SPEED = 0.3;
 
   private final static DigitalInput HiProx = new DigitalInput(0);
-
+  private final static DigitalInput bottomLimit = new DigitalInput(2);
   private Double HitargetPosition = 0.0;
+  private boolean lastLimit;
 
   public HiArmSubsystem() {
 
@@ -53,7 +54,7 @@ public class HiArmSubsystem extends SubsystemBase {
     HiRollerMotor.restoreFactoryDefaults();
     // Voltage compensation and current limits
     HiRollerMotor.enableVoltageCompensation(12);
-    HiRollerMotor.setSmartCurrentLimit(20);
+    HiRollerMotor.setSmartCurrentLimit(25);
     HiRollerMotor.setIdleMode(IdleMode.kBrake);
     HiRollerMotor.burnFlash();
 
@@ -70,9 +71,9 @@ public class HiArmSubsystem extends SubsystemBase {
     HipidController.setFeedbackDevice(HiarmEncoder);
 
     // Configure closed-loop control - FIX ME!!!
-    double kP = 0.0075;  // .0025; 
+    double kP = 0.01;  // .0075; 
     double kI = 0.005;
-    double kD = 0.02; 
+    double kD = 0.0075; 
     double kIz = 1.0; 
     double kFF = 0;
     double kMaxOutput = .4;
@@ -112,14 +113,21 @@ public class HiArmSubsystem extends SubsystemBase {
     
     // Brake mode helps hold arm in place - but not for closed loop
     HiarmMotor.setIdleMode(IdleMode.kCoast);
+    HiarmMotor.setClosedLoopRampRate(0.5);
+    HiarmMotor.setOpenLoopRampRate(0.5);
  
     // Save settings to motor flash, so they persist between power cycles
     HiarmMotor.burnFlash();
-    
+    lastLimit = bottomLimit.get();
   }
 
   @Override
   public void periodic() {
+    boolean tmpLimit = bottomLimit.get();
+    if(tmpLimit == true && lastLimit == false) {
+      HiarmEncoder.setPosition(5);
+    }
+    lastLimit = tmpLimit;
     if (HitargetPosition != null) {
       // Calculate feed forward based on angle to counteract gravity
       //   double cosineScalar = Math.cos(getArmPosition());
