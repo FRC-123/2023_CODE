@@ -23,7 +23,6 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DefaultDriveCommand;
 
-import static frc.robot.Constants.TeleopDriveConstants.DEADBAND;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.HiArmSubsystem;
 import frc.robot.subsystems.LedSubsystem;
@@ -46,7 +45,7 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final HiArmSubsystem m_hiArm = new HiArmSubsystem();
   private final LoArmSubsystem m_loArm = new LoArmSubsystem();
-  private final LedSubsystem m_led = new LedSubsystem();
+
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
