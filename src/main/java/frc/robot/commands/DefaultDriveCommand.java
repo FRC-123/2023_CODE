@@ -21,36 +21,37 @@ public class DefaultDriveCommand extends CommandBase{
     public void execute() {
         double multiplier = 0.45;
         if((m_drivController.getLeftTriggerAxis() > 0.75) || (m_drivController.getRightTriggerAxis() > 0.75)) {
-            multiplier = 0.7;
+            multiplier = 0.65;
         }
         if(m_drivController.getPOV() == -1) {
             driveSubsystem.tankDrive(
                 -multiplier*m_drivController.getLeftY(), -multiplier*m_drivController.getRightY());
         }
         else {
+            double povmultiplier = multiplier*(1/0.45);
             if(m_drivController.getPOV() == 0) {
-                driveSubsystem.tankDrive(0.25, 0.25);
+                driveSubsystem.tankDrive(povmultiplier*0.25, povmultiplier*0.25);
             }
             else if(m_drivController.getPOV() == 45) {
-                driveSubsystem.tankDrive(0.3, -0.12);
+                driveSubsystem.tankDrive(povmultiplier*0.3, povmultiplier*-0.12);
             }
             else if(m_drivController.getPOV() == 90) {
-                driveSubsystem.tankDrive(0.3, -0.3);
+                driveSubsystem.tankDrive(povmultiplier*0.3, povmultiplier*-0.3);
             }
             else if(m_drivController.getPOV() == 135) {
-                driveSubsystem.tankDrive(-0.3, 0.12);
+                driveSubsystem.tankDrive(povmultiplier*-0.3, povmultiplier*0.12);
             }
             else if(m_drivController.getPOV() == 180) {
-                driveSubsystem.tankDrive(-0.25, -0.25);
+                driveSubsystem.tankDrive(povmultiplier*-0.25, povmultiplier*-0.25);
             }
             else if(m_drivController.getPOV() == 225) {
-                driveSubsystem.tankDrive(0.12, -0.3);
+                driveSubsystem.tankDrive(povmultiplier*0.12, povmultiplier*-0.3);
             }
             else if(m_drivController.getPOV() == 270) {
-                driveSubsystem.tankDrive(-0.3, 0.3);
+                driveSubsystem.tankDrive(povmultiplier*-0.3, povmultiplier*0.3);
             }
             else if(m_drivController.getPOV() == 315) {
-                driveSubsystem.tankDrive(-0.12, 0.3);
+                driveSubsystem.tankDrive(povmultiplier*-0.12, povmultiplier*0.3);
             }
         }
     }
