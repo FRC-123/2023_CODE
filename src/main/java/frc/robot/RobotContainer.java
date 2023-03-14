@@ -49,7 +49,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final HiArmSubsystem m_hiArm = new HiArmSubsystem();
-  private final LoArmSubsystem m_loArm = new LoArmSubsystem();
+  private final LoArmSubsystem m_loArm = new LoArmSubsystem(m_hiArm);
 
 
   // The driver's controller
@@ -169,7 +169,7 @@ public class RobotContainer {
 
     // Run path following command, then stop at the end.
     //return new RunCommand(() -> m_robotDrive.tankMetersPerSecond(-0.5, -0.5), m_robotDrive).until(() -> m_robotDrive.getPose().minus(new Pose2d(-1, 0, new Rotation2d(0))).getX() <= 0).andThen(() -> m_robotDrive.tankDriveVolts(0, 0));
-    return new InstantCommand(() -> m_hiArm.moveToPosition(182), m_hiArm).andThen(new WaitUntilCommand(m_hiArm::atPoint)).andThen(() -> m_hiArm.moveRollers(0.4), m_hiArm).andThen(new WaitUntilCommand(m_hiArm::notHaveCube)).andThen(new WaitCommand(0.5)).andThen(m_hiArm::stopRollers).andThen(() -> m_hiArm.moveToPosition(0), m_hiArm).andThen(new WaitUntilCommand(m_hiArm::atPoint)).andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(-0.5, -0.5), m_robotDrive).until(() -> m_robotDrive.getPose().minus(new Pose2d(-1, 0, new Rotation2d(0))).getX() <= 0)).andThen(() -> m_robotDrive.tankMetersPerSecond(0, 0));
+    return new InstantCommand(() -> m_hiArm.moveToPosition(182), m_hiArm).andThen(new WaitUntilCommand(m_hiArm::atPoint)).andThen(() -> m_hiArm.moveRollers(0.4), m_hiArm).andThen(new WaitUntilCommand(m_hiArm::notHaveCube)).andThen(new WaitCommand(0.5)).andThen(m_hiArm::stopRollers).andThen(() -> m_hiArm.moveToPosition(0), m_hiArm).andThen(new WaitUntilCommand(m_hiArm::atPoint)).andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(-0.6, -0.6), m_robotDrive).until(() -> m_robotDrive.getPose().minus(new Pose2d(-1, 0, new Rotation2d(0))).getX() <= 0)).andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0, 0)));
   }
 
   public Command debugAutonCommand() {

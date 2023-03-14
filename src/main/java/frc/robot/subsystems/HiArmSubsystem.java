@@ -33,6 +33,7 @@ public class HiArmSubsystem extends SubsystemBase {
   // limits in degrees rotation
   private static final float LIMIT_BOTTOM = -3f;
   private static final float LIMIT_TOP = 185f;
+  private static final float SAFE_ZONE = 140f;
 
   private final CANSparkMax HiarmMotor;
   private final SparkMaxPIDController HipidController;
@@ -253,5 +254,9 @@ public class HiArmSubsystem extends SubsystemBase {
 
   public boolean notHaveCube() {
     return !HiProx.get();
+  }
+
+  public boolean inSafeZone(){
+    return HiarmEncoder.getPosition() > SAFE_ZONE;
   }
 }

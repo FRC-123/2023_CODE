@@ -45,7 +45,10 @@ public class LoArmSubsystem extends SubsystemBase {
 
   private final static DigitalInput LoProx = new DigitalInput(1);
 
-  public LoArmSubsystem() {
+  private final HiArmSubsystem m_hiarm;
+
+  public LoArmSubsystem(HiArmSubsystem hi) {
+    m_hiarm = hi;
 
     LoRollerMotor = new CANSparkMax(LoArmConstants.LOROLLER_MOTOR_CANID, MotorType.kBrushed);
 
@@ -180,8 +183,10 @@ public class LoArmSubsystem extends SubsystemBase {
    * @param radians position in radians
    */
   public void moveToPosition(double degrees) {
+    if(m_hiarm.inSafeZone()) {
+      LotargetPosition = degrees;
+    }
     // Set the target position, but move in execute() so feed forward keeps updating
-    LotargetPosition = degrees;
   }
 
   /**
