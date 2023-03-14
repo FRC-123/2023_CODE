@@ -4,6 +4,8 @@ import static com.revrobotics.CANSparkMax.SoftLimitDirection.kForward;
 import static com.revrobotics.CANSparkMax.SoftLimitDirection.kReverse;
 import static com.revrobotics.SparkMaxLimitSwitch.Type.kNormallyOpen;
 
+import java.time.Period;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.ControlType;
@@ -30,7 +32,7 @@ public class HiArmSubsystem extends SubsystemBase {
 
   // limits in degrees rotation
   private static final float LIMIT_BOTTOM = -3f;
-  private static final float LIMIT_TOP = 170f;
+  private static final float LIMIT_TOP = 185f;
 
   private final CANSparkMax HiarmMotor;
   private final SparkMaxPIDController HipidController;
@@ -39,7 +41,7 @@ public class HiArmSubsystem extends SubsystemBase {
   private final CANSparkMax HiRollerMotor;
 
   private final static double CUBE_INTAKE_SPEED = 0.5;
-  private final static double CUBE_EXPELL_SPEED = -0.15;
+  private final static double CUBE_EXPELL_SPEED = -0.6;
   private final static double CONE_INTAKE_SPEED = -0.3;
   private final static double CONE_EXPELL_SPEED = 0.3;
 
@@ -211,6 +213,13 @@ public class HiArmSubsystem extends SubsystemBase {
     HitargetPosition = degrees;
   }
 
+  public void incrementArm() {
+    HitargetPosition += 10;
+  }
+
+  public void decrementArm() {
+    HitargetPosition -= 10;
+  }
   /**
    * Gets the arm position
    * @return position in degrees
@@ -229,6 +238,20 @@ public class HiArmSubsystem extends SubsystemBase {
   }
 
   public boolean atPoint() {
-    return Math.abs(HitargetPosition - getArmPosition()) < 5;
+    double percent = HitargetPosition*.1;
+    if(percent > 5) {
+      return Math.abs(HitargetPosition - getArmPosition()) < percent;
+    }
+    else {
+      return Math.abs(HitargetPosition - getArmPosition()) < 5;
+    }
+  }
+
+  public boolean hasCube() {
+    return HiProx.get();
+  }
+
+  public boolean notHaveCube() {
+    return !HiProx.get();
   }
 }

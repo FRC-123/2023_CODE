@@ -24,13 +24,13 @@ public final class Constants {
     public static final boolean kLeftMotorReversed = false;
     public static final boolean kRightMotorReversed = true;
 
-    public static final double kTrackwidthMeters = 0.6895;
+    public static final double kTrackwidthMeters = 0.56648;
     public static final DifferentialDriveKinematics kDriveKinematics =
         new DifferentialDriveKinematics(kTrackwidthMeters);
 
     public static final int kEncoderCPR = 4096;
     public static final double kWheelDiameterMeters = 0.1524;
-    public static final double kGearRatio = 16.37;
+    public static final double kGearRatio = 10.86;
     public static final double kPositionConvFactor = ( Math.PI * kWheelDiameterMeters ) / kGearRatio;
     public static final double kVelocityConvFactor = kPositionConvFactor / 60.0;
 
@@ -39,9 +39,9 @@ public final class Constants {
     // for *your* robot's drive.
     // The Robot Characterization Toolsuite provides a convenient tool for obtaining these
     // values for your robot.
-    public static final double ksVolts = 0.098592;
-    public static final double kvVoltSecondsPerMeter = 4.222;
-    public static final double kaVoltSecondsSquaredPerMeter = 0.24104;
+    public static final double ksVolts = 0.015114;
+    public static final double kvVoltSecondsPerMeter = 2.7641;
+    public static final double kaVoltSecondsSquaredPerMeter = 1.829;
 
     // Example value only - as above, this must be tuned for your drive!
     public static final double kPDriveVel = 5.9245E-05; // sparkmax internal
@@ -58,7 +58,7 @@ public final class Constants {
 
   public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond = 0.5; //0.5
-    public static final double kMaxAccelerationMetersPerSecondSquared = 0.3; //0.1
+    public static final double kMaxAccelerationMetersPerSecondSquared = 0.1; //0.1
 
     // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
     public static final double kRamseteB = 2;

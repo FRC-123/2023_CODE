@@ -15,6 +15,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -35,7 +36,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final SparkMaxPIDController leftController = leftDrive.getPIDController();
   private final SparkMaxPIDController rightController = rightDrive.getPIDController();
   // private DifferentialDriveOdometry odometry;
-  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.098592, 4.222, 0.24104);
+  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter, DriveConstants.kaVoltSecondsSquaredPerMeter);
   // private final DifferentialDriveKinematics differentialDriveKinematics = new DifferentialDriveKinematics(0.6895);
 
   // The robot's drive
@@ -97,8 +98,8 @@ public class DriveSubsystem extends SubsystemBase {
     leftController.setFeedbackDevice(leftEncoder);
     rightController.setFeedbackDevice(rightEncoder);
     
-    leftController.setP(5.9245E-05, 0);
-    rightController.setP(5.9245E-05, 0);
+    leftController.setP(0.00093922, 0);
+    rightController.setP(0.00093922, 0);
     leftController.setD(0, 0);
     rightController.setD(0, 0);
     leftController.setI(0, 0);
@@ -124,9 +125,11 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    m_odometry.update(
+    Pose2d currentPose = m_odometry.update(
       m_ahrs.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
-      //SmartDashboard.putString("pose", m_odometry.getPoseMeters().toString());
+    SmartDashboard.putString("pose", currentPose.toString());
+    SmartDashboard.putNumber("velo", (leftEncoder.getVelocity() + rightEncoder.getVelocity())/2);
+    SmartDashboard.putString("distance", getPose().minus(new Pose2d(-1, 0, new Rotation2d(0))).toString());
   }
 
   /**

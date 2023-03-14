@@ -17,6 +17,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -30,6 +31,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -51,6 +55,7 @@ public class RobotContainer {
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_armController = new XboxController(OIConstants.kArmControllerPort);
+  CommandXboxController m_armControllerCommand = new CommandXboxController(OIConstants.kArmControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -70,19 +75,13 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Drive at half speed when the right bumper is held
-    new JoystickButton(m_armController, Button.kA.value)
+    new Trigger(this::L1Up)
         .onTrue(new InstantCommand(() -> m_loArm.moveToPosition(0)));
-    new JoystickButton(m_armController, Button.kY.value)
+    new Trigger(this::L1Down)
         .onTrue(new InstantCommand(() -> m_loArm.moveToPosition(90)));
-    new JoystickButton(m_armController, Button.kX.value)
-        .onTrue(new InstantCommand(() -> m_loArm.moveToPosition(60)));
     
-    new JoystickButton(m_armController, Button.kRightBumper.value)
-        .onTrue(new InstantCommand(() -> m_hiArm.intakeCone()))
-        .onFalse(new InstantCommand(() -> m_hiArm.stopRollers()));
-    new JoystickButton(m_armController, Button.kLeftBumper.value)
-        .onTrue(new InstantCommand(() -> m_loArm.moveRollers(-0.6)))
-        .onFalse(new InstantCommand(() -> m_loArm.stopRollers()));
+    m_armControllerCommand.povUp().onTrue(new InstantCommand(m_hiArm::incrementArm, m_hiArm));
+    m_armControllerCommand.povDown().onTrue(new InstantCommand(m_hiArm::decrementArm, m_hiArm));
 
     new JoystickButton(m_armController, Button.kRightBumper.value)
         .onTrue(new InstantCommand(() -> m_hiArm.intakeCube(), m_hiArm))
@@ -97,13 +96,13 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> m_loArm.expellObj(), m_loArm))
         .onFalse(new InstantCommand(() -> m_loArm.stopRollers(), m_loArm));
     new JoystickButton(m_driverController, Button.kLeftBumper.value)
-        .onTrue(new InstantCommand(() -> LedSubsystem.toggle_cube()));
+        .onTrue(new InstantCommand(() -> LedSubsystem.set_cube_req()));
     new JoystickButton(m_driverController, Button.kRightBumper.value)
-        .onTrue(new InstantCommand(() -> LedSubsystem.toggle_cone()));
+        .onTrue(new InstantCommand(() -> LedSubsystem.set_cone_req()));
     new Trigger(this::R1Down)
         .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(0)));
     new Trigger(this::R1Up)
-        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(165)));
+        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(182)));
     // Led bar triggers
   }
 
@@ -139,9 +138,9 @@ public class RobotContainer {
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1.5, 1.5), new Translation2d(3, 0), new Translation2d(1.5, -1.5)),
+            List.of(new Translation2d(1, 0)),
             // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(0, 0, new Rotation2d(90)),
+            new Pose2d(1, 0, new Rotation2d(0)),
             // Pass config
             config);
 
@@ -165,10 +164,16 @@ public class RobotContainer {
             new RamseteCommand(exampleTrajectory, m_robotDrive::getPose, new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta), DriveConstants.kDriveKinematics, m_robotDrive::tankMetersPerSecond, m_robotDrive);
 
     // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+    //m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose()); // for ramsete command
+    m_robotDrive.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
 
     // Run path following command, then stop at the end.
-    return ramseteCommand.andThen(() -> m_robotDrive.tankDriveVolts(0, 0));
+    //return new RunCommand(() -> m_robotDrive.tankMetersPerSecond(-0.5, -0.5), m_robotDrive).until(() -> m_robotDrive.getPose().minus(new Pose2d(-1, 0, new Rotation2d(0))).getX() <= 0).andThen(() -> m_robotDrive.tankDriveVolts(0, 0));
+    return new InstantCommand(() -> m_hiArm.moveToPosition(182), m_hiArm).andThen(new WaitUntilCommand(m_hiArm::atPoint)).andThen(() -> m_hiArm.moveRollers(0.4), m_hiArm).andThen(new WaitUntilCommand(m_hiArm::notHaveCube)).andThen(new WaitCommand(0.5)).andThen(m_hiArm::stopRollers).andThen(() -> m_hiArm.moveToPosition(0), m_hiArm).andThen(new WaitUntilCommand(m_hiArm::atPoint)).andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(-0.5, -0.5), m_robotDrive).until(() -> m_robotDrive.getPose().minus(new Pose2d(-1, 0, new Rotation2d(0))).getX() <= 0)).andThen(() -> m_robotDrive.tankMetersPerSecond(0, 0));
+  }
+
+  public Command debugAutonCommand() {
+    return new RunCommand(() -> m_robotDrive.tankMetersPerSecond(1, 1), m_robotDrive);
   }
 
     /**
@@ -199,6 +204,12 @@ public class RobotContainer {
     }
     private boolean R1Up() {
         return m_armController.getRawAxis(5) < -0.75;
+    }
+    private boolean L1Down() {
+        return m_armController.getRawAxis(1) > 0.75;
+    }
+    private boolean L1Up() {
+        return m_armController.getRawAxis(1) < -0.75;
     }
 }
 
