@@ -120,6 +120,8 @@ public class DriveSubsystem extends SubsystemBase {
     m_odometry =
         new DifferentialDriveOdometry(
           m_ahrs.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
+    
+    m_drive.setSafetyEnabled(false); 
   }
 
   @Override
@@ -168,12 +170,10 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rot the commanded rotation
    */
   public void arcadeDrive(double fwd, double rot) {
-    m_drive.setSafetyEnabled(true);
     m_drive.arcadeDrive(fwd, rot);
   }
 
   public void tankDrive(double left, double right) {
-    m_drive.setSafetyEnabled(true);
     m_drive.tankDrive(left, right);
   }
 
@@ -184,7 +184,6 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rightVolts the commanded right output
    */
   public void tankDriveVolts(double leftVolts, double rightVolts) {
-    m_drive.setSafetyEnabled(false);
     leftDrive.setVoltage(leftVolts);
     rightDrive.setVoltage(rightVolts);
     m_drive.feed();
@@ -256,7 +255,6 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void tankMetersPerSecond(double left, double right) {
-    m_drive.setSafetyEnabled(false);
     leftController.setReference(left, ControlType.kVelocity, 0, feedforward.calculate(left));
     rightController.setReference(right, ControlType.kVelocity, 0, feedforward.calculate(right));
   }
