@@ -120,6 +120,8 @@ public class DriveSubsystem extends SubsystemBase {
     m_odometry =
         new DifferentialDriveOdometry(
           m_ahrs.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
+    
+    m_drive.setSafetyEnabled(false);
   }
 
   @Override
@@ -130,6 +132,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putString("pose", currentPose.toString());
     SmartDashboard.putNumber("velo", (leftEncoder.getVelocity() + rightEncoder.getVelocity())/2);
     SmartDashboard.putString("distance", getPose().minus(new Pose2d(-1, 0, new Rotation2d(0))).toString());
+    SmartDashboard.putNumber("roll", m_ahrs.getRoll());
   }
 
   /**
@@ -168,12 +171,14 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rot the commanded rotation
    */
   public void arcadeDrive(double fwd, double rot) {
-    m_drive.setSafetyEnabled(true);
     m_drive.arcadeDrive(fwd, rot);
   }
 
+  public void arcadeDrive(double fwd, double rot, boolean square) {
+    m_drive.arcadeDrive(fwd, rot, square);
+  }
+
   public void tankDrive(double left, double right) {
-    m_drive.setSafetyEnabled(true);
     m_drive.tankDrive(left, right);
   }
 
@@ -184,7 +189,6 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rightVolts the commanded right output
    */
   public void tankDriveVolts(double leftVolts, double rightVolts) {
-    m_drive.setSafetyEnabled(false);
     leftDrive.setVoltage(leftVolts);
     rightDrive.setVoltage(rightVolts);
     m_drive.feed();
@@ -256,8 +260,14 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void tankMetersPerSecond(double left, double right) {
-    m_drive.setSafetyEnabled(false);
     leftController.setReference(left, ControlType.kVelocity, 0, feedforward.calculate(left));
     rightController.setReference(right, ControlType.kVelocity, 0, feedforward.calculate(right));
+  }
+
+  public boolean onChargingStation() {
+    return m_ahrs.getRoll() > 15;
+  }
+  public boolean balenced() {
+    return Math.abs(m_ahrs.getRoll()) < 5;
   }
 }

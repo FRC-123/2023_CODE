@@ -63,6 +63,9 @@ public final class Constants {
     // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
+
+    public static final double normalAutoDistance = 4.1146;
+    public static final double balenceAutoDistance = 4.1146;
   }
   
   public static class HiArmConstants {

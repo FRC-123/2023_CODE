@@ -4,7 +4,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.LimelightHelpers;
 import frc.robot.Constants.OIConstants;
+import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LedSubsystem;
 
@@ -19,6 +21,13 @@ public class DefaultDriveCommand extends CommandBase{
 
     @Override
     public void execute() {
+        if(m_drivController.getAButton()) {
+            LimelightResults results = LimelightHelpers.getLatestResults("limelight");
+            if(results.targetingResults.targets_Retro.length > 0) {
+                driveSubsystem.arcadeDrive(0, results.targetingResults.targets_Retro[0].tx/-25, true);
+                return;
+            }
+        }
         double multiplier = 0.45;
         if((m_drivController.getLeftTriggerAxis() > 0.75) || (m_drivController.getRightTriggerAxis() > 0.75)) {
             multiplier = 0.65;

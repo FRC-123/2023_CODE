@@ -95,6 +95,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    LimelightHelpers.setPipelineIndex("limelight", 1);
     LedSubsystem.set_our_alliance_solid();
   }
 
