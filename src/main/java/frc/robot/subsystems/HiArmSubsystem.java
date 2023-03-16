@@ -4,8 +4,6 @@ import static com.revrobotics.CANSparkMax.SoftLimitDirection.kForward;
 import static com.revrobotics.CANSparkMax.SoftLimitDirection.kReverse;
 import static com.revrobotics.SparkMaxLimitSwitch.Type.kNormallyOpen;
 
-import java.time.Period;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.ControlType;
