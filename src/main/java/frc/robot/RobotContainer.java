@@ -76,7 +76,8 @@ public class RobotContainer {
     autoPiece.addOption("Cone", AutoPiece.Cone);
     autoPiece.addOption("Cube", AutoPiece.Cube);
     autoPiece.setDefaultOption("Cube", AutoPiece.Cube);
-    SmartDashboard.putNumber("Auto Distance", 4.1146);
+    SmartDashboard.putNumber("Normal Auto Distance", AutoConstants.normalAutoDistance);
+    SmartDashboard.putNumber("Balencing Auto Distance", AutoConstants.balenceAutoDistance);
     SmartDashboard.putData("Auto Type", autoType);
     SmartDashboard.putData("Auto Piece", autoPiece);
   }
@@ -194,7 +195,7 @@ public class RobotContainer {
                 .andThen(() -> m_hiArm.moveToPosition(0), m_hiArm)
                 .andThen(new WaitUntilCommand(m_hiArm::atPoint))
                 .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(-0.6, -0.6), m_robotDrive)
-                    .until(() -> m_robotDrive.getPose().minus(new Pose2d(-SmartDashboard.getNumber("Auto Distance", AutoConstants.normalAutoDistance), 0, new Rotation2d(0))).getX() <= 0))
+                    .until(() -> m_robotDrive.getPose().minus(new Pose2d(-SmartDashboard.getNumber("Normal Auto Distance", AutoConstants.normalAutoDistance), 0, new Rotation2d(0))).getX() <= 0))
                 .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0, 0), m_robotDrive));
         }
         else {
@@ -207,7 +208,7 @@ public class RobotContainer {
                 .andThen(() -> m_hiArm.moveToPosition(0), m_hiArm)
                 .andThen(new WaitUntilCommand(m_hiArm::atPoint))
                 .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(-0.6, -0.6), m_robotDrive)
-                    .until(() -> m_robotDrive.getPose().minus(new Pose2d(-SmartDashboard.getNumber("Auto Distance", AutoConstants.normalAutoDistance), 0, new Rotation2d(0))).getX() <= 0))
+                    .until(() -> m_robotDrive.getPose().minus(new Pose2d(-SmartDashboard.getNumber("Normal Auto Distance", AutoConstants.normalAutoDistance), 0, new Rotation2d(0))).getX() <= 0))
                 .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0, 0), m_robotDrive));
         }
     }
@@ -222,7 +223,7 @@ public class RobotContainer {
                 .andThen(() -> m_hiArm.moveToPosition(0), m_hiArm)
                 .andThen(new WaitUntilCommand(m_hiArm::atPoint))
                 .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(-0.6, -0.6), m_robotDrive)
-                    .until(() -> m_robotDrive.getPose().minus(new Pose2d(-SmartDashboard.getNumber("Auto Distance", AutoConstants.balenceAutoDistance), 0, new Rotation2d(0))).getX() <= 0))
+                    .until(() -> m_robotDrive.getPose().minus(new Pose2d(-SmartDashboard.getNumber("Balencing Auto Distance", AutoConstants.balenceAutoDistance), 0, new Rotation2d(0))).getX() <= 0))
                 .andThen(new ParallelRaceGroup(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0.35, 0.35), m_robotDrive), new WaitUntilCommand(m_robotDrive::onChargingStation)))
                 .andThen(new ParallelRaceGroup(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0.35, 0.35), m_robotDrive), new WaitUntilCommand(m_robotDrive::balenced)))
                 .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0, 0), m_robotDrive));
@@ -237,7 +238,7 @@ public class RobotContainer {
                 .andThen(() -> m_hiArm.moveToPosition(0), m_hiArm)
                 .andThen(new WaitUntilCommand(m_hiArm::atPoint))
                 .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(-0.6, -0.6), m_robotDrive)
-                    .until(() -> m_robotDrive.getPose().minus(new Pose2d(-SmartDashboard.getNumber("Auto Distance", AutoConstants.balenceAutoDistance), 0, new Rotation2d(0))).getX() <= 0))
+                    .until(() -> m_robotDrive.getPose().minus(new Pose2d(-SmartDashboard.getNumber("Balencing Auto Distance", AutoConstants.balenceAutoDistance), 0, new Rotation2d(0))).getX() <= 0))
                 .andThen(new ParallelRaceGroup(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0.35, 0.35), m_robotDrive), new WaitUntilCommand(m_robotDrive::onChargingStation)))
                 .andThen(new ParallelRaceGroup(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0.35, 0.35), m_robotDrive), new WaitUntilCommand(m_robotDrive::balenced)))
                 .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0, 0), m_robotDrive));
