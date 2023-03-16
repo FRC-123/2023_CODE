@@ -56,6 +56,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     LedSubsystem.set_blank_msg();
+    LimelightHelpers.setLEDMode_ForceOff("limelight");
   }
 
   @Override
@@ -96,6 +97,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     LimelightHelpers.setPipelineIndex("limelight", 1);
+    LimelightHelpers.setLEDMode_PipelineControl("limelight");
     LedSubsystem.set_our_alliance_solid();
   }
 
