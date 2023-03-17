@@ -64,7 +64,7 @@ public final class Constants {
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
 
-    public static final double normalAutoDistance = 4.1146;
+    public static final double normalAutoDistance = 3.8; //3.48 minimum 4.2 maximum
     public static final double balenceAutoDistance = 5;
   }
   

@@ -39,7 +39,7 @@ public class HiArmSubsystem extends SubsystemBase {
 
   private final CANSparkMax HiRollerMotor;
 
-  private final static double CUBE_INTAKE_SPEED = 0.65;
+  private final static double CUBE_INTAKE_SPEED = 0.75;
   private final static double CUBE_EXPELL_SPEED = -0.6;
   private final static double CONE_INTAKE_SPEED = -0.3;
   private final static double CONE_EXPELL_SPEED = 0.3;

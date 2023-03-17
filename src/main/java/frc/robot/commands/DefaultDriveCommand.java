@@ -22,20 +22,21 @@ public class DefaultDriveCommand extends CommandBase{
         if(m_drivController.getAButton()) {
             LimelightResults results = LimelightHelpers.getLatestResults("limelight");
             if(results.targetingResults.targets_Retro.length > 0) {
-                driveSubsystem.arcadeDrive(0, results.targetingResults.targets_Retro[0].tx/-25, true);
+                driveSubsystem.arcadeDrive(0, results.targetingResults.targets_Retro[0].tx/-25, false);
                 return;
             }
         }
-        double multiplier = 0.50;
+        double multiplier = 0.65;
+        double povmultiplier = 1;
         if((m_drivController.getLeftTriggerAxis() > 0.75) || (m_drivController.getRightTriggerAxis() > 0.75)) {
-            multiplier = 0.70;
+            multiplier = 0.85; //Turbo
+            povmultiplier = 1.4; //POV Turbo
         }
         if(m_drivController.getPOV() == -1) {
             driveSubsystem.tankDrive(
                 -multiplier*m_drivController.getLeftY(), -multiplier*m_drivController.getRightY());
         }
         else {
-            double povmultiplier = multiplier*(1/0.50);
             if(m_drivController.getPOV() == 0) {
                 driveSubsystem.tankDrive(povmultiplier*0.25, povmultiplier*0.25);
             }
