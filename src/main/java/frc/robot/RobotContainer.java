@@ -221,11 +221,14 @@ public class RobotContainer {
                 .andThen(new WaitCommand(0.5))
                 .andThen(m_hiArm::stopRollers)
                 .andThen(() -> m_hiArm.moveToPosition(0), m_hiArm)
-                .andThen(new WaitUntilCommand(m_hiArm::atPoint))
-                .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(-0.6, -0.6), m_robotDrive)
-                    .until(() -> m_robotDrive.getPose().minus(new Pose2d(-SmartDashboard.getNumber("Balencing Auto Distance", AutoConstants.balenceAutoDistance), 0, new Rotation2d(0))).getX() <= 0))
-                .andThen(new ParallelRaceGroup(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0.35, 0.35), m_robotDrive), new WaitUntilCommand(m_robotDrive::onChargingStation)))
-                .andThen(new ParallelRaceGroup(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0.35, 0.35), m_robotDrive), new WaitUntilCommand(m_robotDrive::balenced)))
+                //.andThen(new WaitUntilCommand(m_hiArm::atPoint))
+                //.andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(-1.5, -1.5), m_robotDrive)
+                    //.until(() -> m_robotDrive.getPose().minus(new Pose2d(-SmartDashboard.getNumber("Balencing Auto Distance", AutoConstants.balenceAutoDistance), 0, new Rotation2d(0))).getX() <= 0))
+                .andThen(new ParallelRaceGroup(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(-1.2, -1.2), m_robotDrive), new WaitUntilCommand(m_robotDrive::onChargingStation)))
+                .andThen(new ParallelRaceGroup(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(-0.8, -0.8), m_robotDrive), new WaitCommand(1)))
+                .andThen(new ParallelRaceGroup(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(-0.3, -0.3), m_robotDrive), new WaitUntilCommand(m_robotDrive::balenced)))
+                .andThen(new ParallelRaceGroup(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0.15, 0.15), m_robotDrive), new WaitCommand(0.5)))
+                .andThen(new ParallelRaceGroup(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0.2, 0.2), m_robotDrive), new WaitUntilCommand(m_robotDrive::balenced)))
                 .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0, 0), m_robotDrive));
         }
         else {

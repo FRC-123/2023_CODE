@@ -26,16 +26,16 @@ public class DefaultDriveCommand extends CommandBase{
                 return;
             }
         }
-        double multiplier = 0.45;
+        double multiplier = 0.50;
         if((m_drivController.getLeftTriggerAxis() > 0.75) || (m_drivController.getRightTriggerAxis() > 0.75)) {
-            multiplier = 0.65;
+            multiplier = 0.70;
         }
         if(m_drivController.getPOV() == -1) {
             driveSubsystem.tankDrive(
                 -multiplier*m_drivController.getLeftY(), -multiplier*m_drivController.getRightY());
         }
         else {
-            double povmultiplier = multiplier*(1/0.45);
+            double povmultiplier = multiplier*(1/0.50);
             if(m_drivController.getPOV() == 0) {
                 driveSubsystem.tankDrive(povmultiplier*0.25, povmultiplier*0.25);
             }

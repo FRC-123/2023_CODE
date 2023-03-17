@@ -265,9 +265,9 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public boolean onChargingStation() {
-    return m_ahrs.getRoll() > 15;
+    return Math.abs(m_ahrs.getRoll()) > 10;
   }
   public boolean balenced() {
-    return Math.abs(m_ahrs.getRoll()) < 5;
+    return Math.abs(m_ahrs.getRoll()) < 8;
   }
 }
