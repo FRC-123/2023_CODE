@@ -5,6 +5,8 @@
 package frc.robot;
 
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,6 +34,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    m_robotContainer.setBrakeMode(IdleMode.kCoast);
     //m_led_subsystem = new LedSubsystem();   // create an instance, which will initialize all buffers etc
     // addPeriodic(() -> our_alliance = DriverStation.getAlliance(), 1);
   }
@@ -57,6 +60,7 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     LedSubsystem.set_blank_msg();
     LimelightHelpers.setLEDMode_ForceOff("limelight");
+    m_robotContainer.setBrakeMode(IdleMode.kBrake);
   }
 
   @Override
@@ -65,6 +69,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    m_robotContainer.setBrakeMode(IdleMode.kCoast);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     /*
@@ -89,6 +94,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.setBrakeMode(IdleMode.kCoast);
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove

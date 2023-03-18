@@ -270,4 +270,11 @@ public class DriveSubsystem extends SubsystemBase {
   public boolean balenced() {
     return Math.abs(m_ahrs.getRoll()) < 8;
   }
+
+  public void setBrakeMode(IdleMode mode) {
+    leftDrive.setIdleMode(mode);
+    leftDrivefollow.setIdleMode(mode);
+    rightDrive.setIdleMode(mode);
+    rightDrivefollow.setIdleMode(mode);
+  }
 }

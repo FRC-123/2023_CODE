@@ -41,6 +41,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.util.List;
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -114,6 +116,9 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> LedSubsystem.toggle_cube()));
     new JoystickButton(m_driverController, Button.kRightBumper.value)
         .onTrue(new InstantCommand(() -> LedSubsystem.toggle_cone()));
+    new JoystickButton(m_driverController, Button.kB.value)
+        .onTrue(new InstantCommand(() -> m_robotDrive.setBrakeMode(IdleMode.kBrake)))
+        .onFalse(new InstantCommand(() -> m_robotDrive.setBrakeMode(IdleMode.kCoast)));
     new Trigger(this::R1Down)
         .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(0)));
     new Trigger(this::R1Up)
@@ -306,6 +311,10 @@ public class RobotContainer {
     public enum AutoPiece {
         Cube,
         Cone
+    }
+
+    public void setBrakeMode(IdleMode mode) {
+        m_robotDrive.setBrakeMode(mode);
     }
 }
 
