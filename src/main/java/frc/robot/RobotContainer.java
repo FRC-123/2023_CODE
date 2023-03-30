@@ -29,8 +29,10 @@ import frc.robot.subsystems.HiArmSubsystem;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.LoArmSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -92,10 +94,12 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Drive at half speed when the right bumper is held
-    new Trigger(this::L1Up)
-        .onTrue(new InstantCommand(() -> m_loArm.moveToPosition(0)));
+    //new Trigger(this::L1Up)
+        //.onTrue();
+        //.onTrue(new InstantCommand(() -> m_loArm.moveToPosition(0)));
     new Trigger(this::L1Down)
-        .onTrue(new InstantCommand(() -> m_loArm.moveToPosition(90)));
+        .onTrue(new ConditionalCommand(new InstantCommand(() -> m_loArm.moveToPosition(105)), new InstantCommand(() -> m_hiArm.moveToPosition(140)).andThen(new WaitUntilCommand(m_hiArm::atPoint)).andThen(new InstantCommand(() -> m_loArm.moveToPosition(105))), m_hiArm::inSafeZone));
+        //.onTrue(new InstantCommand(() -> m_loArm.moveToPosition(90)));
     
     m_armControllerCommand.povUp().onTrue(new InstantCommand(m_hiArm::incrementArm, m_hiArm));
     m_armControllerCommand.povDown().onTrue(new InstantCommand(m_hiArm::decrementArm, m_hiArm));

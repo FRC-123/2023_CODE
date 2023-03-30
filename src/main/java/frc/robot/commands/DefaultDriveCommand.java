@@ -29,7 +29,7 @@ public class DefaultDriveCommand extends CommandBase{
         double multiplier = 0.65;
         double povmultiplier = 1;
         if((m_drivController.getLeftTriggerAxis() > 0.75) || (m_drivController.getRightTriggerAxis() > 0.75)) {
-            multiplier = 0.85; //Turbo
+            multiplier = 0.95; //Turbo
             povmultiplier = 1.4; //POV Turbo
         }
         if(m_drivController.getPOV() == -1) {

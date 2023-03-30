@@ -32,8 +32,8 @@ public class LoArmSubsystem extends SubsystemBase {
   private static final float LIMIT_BOTTOM = -5.0f;
   private static final float LIMIT_TOP = 95.0f;
 
-  private final static double OBJ_INTAKE_SPEED = -0.6;
-  private final static double OBJ_EXPELL_SPEED = 0.3;
+  private final static double OBJ_INTAKE_SPEED = -0.8;
+  private final static double OBJ_EXPELL_SPEED = 0.6;
 
   private final CANSparkMax LoarmMotor;
   private final SparkMaxPIDController LopidController;
@@ -183,9 +183,7 @@ public class LoArmSubsystem extends SubsystemBase {
    * @param radians position in radians
    */
   public void moveToPosition(double degrees) {
-    if(m_hiarm.inSafeZone()) {
-      LotargetPosition = degrees;
-    }
+    LotargetPosition = degrees;
     // Set the target position, but move in execute() so feed forward keeps updating
   }
 
