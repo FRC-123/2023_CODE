@@ -94,11 +94,24 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Drive at half speed when the right bumper is held
-    //new Trigger(this::L1Up)
+    new Trigger(this::L1Up)
+        .onTrue(
+            new ConditionalCommand(
+                new InstantCommand(() -> m_loArm.moveToPosition(0)), 
+                new InstantCommand(() -> m_hiArm.moveToPosition(140), m_hiArm)
+                    .andThen(new WaitUntilCommand(m_hiArm::atPoint))
+                    .andThen(new InstantCommand(() -> m_loArm.moveToPosition(0), m_hiArm, m_loArm)), 
+                m_hiArm::inSafeZone));
         //.onTrue();
         //.onTrue(new InstantCommand(() -> m_loArm.moveToPosition(0)));
     new Trigger(this::L1Down)
-        .onTrue(new ConditionalCommand(new InstantCommand(() -> m_loArm.moveToPosition(105)), new InstantCommand(() -> m_hiArm.moveToPosition(140)).andThen(new WaitUntilCommand(m_hiArm::atPoint)).andThen(new InstantCommand(() -> m_loArm.moveToPosition(105))), m_hiArm::inSafeZone));
+        .onTrue(
+            new ConditionalCommand(
+                new InstantCommand(() -> m_loArm.moveToPosition(105)), 
+                new InstantCommand(() -> m_hiArm.moveToPosition(140), m_hiArm)
+                    .andThen(new WaitUntilCommand(m_hiArm::atPoint))
+                    .andThen(new InstantCommand(() -> m_loArm.moveToPosition(105), m_hiArm, m_loArm)), 
+                m_hiArm::inSafeZone));
         //.onTrue(new InstantCommand(() -> m_loArm.moveToPosition(90)));
     
     m_armControllerCommand.povUp().onTrue(new InstantCommand(m_hiArm::incrementArm, m_hiArm));
