@@ -33,7 +33,7 @@ public class LoArmSubsystem extends SubsystemBase {
   private static final float LIMIT_TOP = 95.0f;
 
   private final static double OBJ_INTAKE_SPEED = -0.8;
-  private final static double OBJ_EXPELL_SPEED = 0.6;
+  private final static double OBJ_EXPELL_SPEED = 1;
 
   private final CANSparkMax LoarmMotor;
   private final SparkMaxPIDController LopidController;
@@ -43,7 +43,7 @@ public class LoArmSubsystem extends SubsystemBase {
 
   private Double LotargetPosition = 0.0;
 
-  private final static DigitalInput LoProx = new DigitalInput(1);
+  //private final static DigitalInput LoProx = new DigitalInput(1);
 
   private final HiArmSubsystem m_hiarm;
 
@@ -55,7 +55,7 @@ public class LoArmSubsystem extends SubsystemBase {
     LoRollerMotor.restoreFactoryDefaults();
     // Voltage compensation and current limits
     LoRollerMotor.enableVoltageCompensation(12);
-    LoRollerMotor.setSmartCurrentLimit(25);
+    LoRollerMotor.setSmartCurrentLimit(35);
     LoRollerMotor.setIdleMode(IdleMode.kBrake);
     LoRollerMotor.burnFlash();
 

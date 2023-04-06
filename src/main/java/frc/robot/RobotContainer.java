@@ -84,6 +84,8 @@ public class RobotContainer {
     SmartDashboard.putNumber("Balencing Auto Distance", AutoConstants.balenceAutoDistance);
     SmartDashboard.putData("Auto Type", autoType);
     SmartDashboard.putData("Auto Piece", autoPiece);
+    SmartDashboard.putNumber("limelight constant", 25);
+    SmartDashboard.putNumber("limelight kp", 0.15);
   }
 
   /**
@@ -139,7 +141,7 @@ public class RobotContainer {
     new Trigger(this::R1Down)
         .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(0)));
     new Trigger(this::R1Up)
-        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(182)));
+        .onTrue(new InstantCommand(() -> m_hiArm.moveToPosition(185)));
     // Led bar triggers
   }
 
@@ -208,7 +210,7 @@ public class RobotContainer {
     
     if(type.getSelected().equals(AutoType.Normal)) {
         if(piece.getSelected().equals(AutoPiece.Cube)) {
-            return new InstantCommand(() -> m_hiArm.moveToPosition(182), m_hiArm) //Normal Cube
+            return new InstantCommand(() -> m_hiArm.moveToPosition(185), m_hiArm) //Normal Cube
                 .andThen(new WaitUntilCommand(m_hiArm::atPoint))
                 .andThen(() -> m_hiArm.moveRollers(0.4), m_hiArm)
                 .andThen(new WaitUntilCommand(m_hiArm::notHaveCube))
@@ -221,7 +223,7 @@ public class RobotContainer {
                 .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0, 0), m_robotDrive));
         }
         else {
-            return new InstantCommand(() -> m_hiArm.moveToPosition(182), m_hiArm) //Normal Cone
+            return new InstantCommand(() -> m_hiArm.moveToPosition(185), m_hiArm) //Normal Cone
                 .andThen(() -> m_hiArm.moveRollers(0.5))
                 .andThen(new WaitUntilCommand(m_hiArm::atPoint))
                 .andThen(() -> m_hiArm.moveRollers(-0.4), m_hiArm)
@@ -236,7 +238,7 @@ public class RobotContainer {
     }
     else {
         if(piece.getSelected().equals(AutoPiece.Cube)) {
-            return new InstantCommand(() -> m_hiArm.moveToPosition(182), m_hiArm) //Balencing Cube
+            return new InstantCommand(() -> m_hiArm.moveToPosition(185), m_hiArm) //Balencing Cube
                 .andThen(new WaitUntilCommand(m_hiArm::atPoint))
                 .andThen(() -> m_hiArm.moveRollers(0.4), m_hiArm)
                 .andThen(new WaitUntilCommand(m_hiArm::notHaveCube))
@@ -254,7 +256,7 @@ public class RobotContainer {
                 .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0, 0), m_robotDrive));
         }
         else {
-            return new InstantCommand(() -> m_hiArm.moveToPosition(182), m_hiArm) //Balencing Cone
+            return new InstantCommand(() -> m_hiArm.moveToPosition(185), m_hiArm) //Balencing Cone
                 .andThen(() -> m_hiArm.moveRollers(0.6))
                 .andThen(new WaitUntilCommand(m_hiArm::atPoint))
                 .andThen(() -> m_hiArm.moveRollers(-0.4), m_hiArm)

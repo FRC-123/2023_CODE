@@ -72,13 +72,13 @@ public class HiArmSubsystem extends SubsystemBase {
     HipidController.setFeedbackDevice(HiarmEncoder);
 
     // Configure closed-loop control - FIX ME!!!
-    double kP = 0.01;  // .0075; 
+    double kP = 0.019;  // .01; 
     double kI = 0.005;
     double kD = 0.0075; 
     double kIz = 1.0; 
     double kFF = 0;
     double kMaxOutput = .4;
-    double kMinOutput = -.25;
+    double kMinOutput = -.425;
     double allowedErr = 0.125; // Error in rotations, not radians
 
     // Smart Motion Coefficients

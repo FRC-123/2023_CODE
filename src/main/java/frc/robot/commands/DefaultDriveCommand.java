@@ -22,7 +22,7 @@ public class DefaultDriveCommand extends CommandBase{
         if(m_drivController.getAButton()) {
             LimelightResults results = LimelightHelpers.getLatestResults("limelight");
             if(results.targetingResults.targets_Retro.length > 0) {
-                driveSubsystem.arcadeDrive(0, results.targetingResults.targets_Retro[0].tx/-25, false);
+                driveSubsystem.arcadeDrive(0, Math.copySign(Math.abs(results.targetingResults.targets_Retro[0].tx/30) + 0.05, -results.targetingResults.targets_Retro[0].tx), false);
                 return;
             }
         }
