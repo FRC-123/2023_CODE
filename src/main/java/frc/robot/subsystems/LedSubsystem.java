@@ -43,18 +43,18 @@ public class LedSubsystem extends SubsystemBase {
         // init message buffers
         for (int i = 0; i < 20; i++) {
             // pre-set all message buffers during init
-            led_red_alliance.setLED(i, Color.kFirstRed);
-            led_blue_alliance.setLED(i, Color.kFirstBlue);
+            led_red_alliance.setLED(i, Color.kRed);
+            led_blue_alliance.setLED(i, Color.kBlue);
             led_green.setLED(i, Color.kGreen);
             if ( ((i&3)==0) || ((i&3)==2)) { // alternate every 4 pixels
-                led_red_blue.setLED(i, Color.kFirstRed);
+                led_red_blue.setLED(i, Color.kRed);
             } else {
-                led_red_blue.setLED(i, Color.kFirstBlue);
+                led_red_blue.setLED(i, Color.kBlue);
             }
             led_blank.setLED(i, Color.kBlack);
             led_dynamic_msg.setLED(i, Color.kBlack);
-            led_cube_req.setLED(i, Color.kDarkViolet); // cube color req
-            led_cone_req.setLED(i, Color.kGold); // cone color req
+            led_cube_req.setLED(i, Color.kViolet); // cube color req
+            led_cone_req.setLED(i, Color.kYellow); // cone color req
         }
         led_bar.setData(led_red_blue);
         currenState = LedState.Alliance;
