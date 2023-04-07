@@ -80,10 +80,16 @@ public class RobotContainer {
     autoPiece.addOption("Cone", AutoPiece.Cone);
     autoPiece.addOption("Cube", AutoPiece.Cube);
     autoPiece.setDefaultOption("Cube", AutoPiece.Cube);
+    SendableChooser<AutoRotate> autorotate = new SendableChooser<AutoRotate>();
+    autorotate.addOption("Clockwise", AutoRotate.C);
+    autorotate.addOption("Counter Clockwise", AutoRotate.CC);
+    autorotate.addOption("None", AutoRotate.None);
+    autorotate.setDefaultOption("None", AutoRotate.None);
     SmartDashboard.putNumber("Normal Auto Distance", AutoConstants.normalAutoDistance);
     SmartDashboard.putNumber("Balencing Auto Distance", AutoConstants.balenceAutoDistance);
     SmartDashboard.putData("Auto Type", autoType);
     SmartDashboard.putData("Auto Piece", autoPiece);
+    SmartDashboard.putData("Auto Rot", autorotate);
     SmartDashboard.putNumber("limelight constant", 25);
     SmartDashboard.putNumber("limelight kp", 0.15);
   }
@@ -207,6 +213,7 @@ public class RobotContainer {
     //m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose()); // for ramsete command
     SendableChooser<AutoType> type = (SendableChooser) SmartDashboard.getData("Auto Type");
     SendableChooser<AutoPiece> piece = (SendableChooser) SmartDashboard.getData("Auto Piece");
+    SendableChooser<AutoRotate> rotate = (SendableChooser) SmartDashboard.getData("Auto Rot");
     
     if(type.getSelected().equals(AutoType.Normal)) {
         if(piece.getSelected().equals(AutoPiece.Cube)) {
@@ -223,7 +230,8 @@ public class RobotContainer {
                 .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0, 0), m_robotDrive));
         }
         else {
-            return new InstantCommand(() -> m_hiArm.moveToPosition(185), m_hiArm) //Normal Cone
+            if(rotate.getSelected().equals(AutoRotate.CC)) {
+                return new InstantCommand(() -> m_hiArm.moveToPosition(185), m_hiArm) //Normal Cone Counter Clockwise
                 .andThen(() -> m_hiArm.moveRollers(0.5))
                 .andThen(new WaitUntilCommand(m_hiArm::atPoint))
                 .andThen(() -> m_hiArm.moveRollers(-0.4), m_hiArm)
@@ -231,9 +239,37 @@ public class RobotContainer {
                 .andThen(m_hiArm::stopRollers)
                 .andThen(() -> m_hiArm.moveToPosition(0), m_hiArm)
                 .andThen(new WaitUntilCommand(m_hiArm::atPoint))
-                .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(-0.6, -0.6), m_robotDrive)
+                .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(-1.2, -1.2), m_robotDrive)
                     .until(() -> m_robotDrive.getPose().minus(new Pose2d(-SmartDashboard.getNumber("Normal Auto Distance", AutoConstants.normalAutoDistance), 0, new Rotation2d(0))).getX() <= 0))
+                .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(-0.8, 0.8), m_robotDrive)
+                    .until(() -> m_robotDrive.getPose().minus(new Pose2d(0, 0, Rotation2d.fromDegrees(151))).getRotation().getDegrees() >= 0))
+                .andThen(() -> m_hiArm.moveToPosition(140), m_hiArm)
+                .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0, 0), m_robotDrive).raceWith(new WaitCommand(0.5)))
+                .andThen(new WaitUntilCommand(m_hiArm::atPoint))
+                .andThen(() -> m_loArm.moveToPosition(105), m_hiArm, m_loArm)
+                .andThen(new WaitUntilCommand(m_loArm::atPoint))
+                .andThen(() -> m_loArm.intakeObj())
+                .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(1, 1), m_robotDrive)
+                    .raceWith(new WaitCommand(2)))
+                .andThen(() -> m_loArm.stopRollers())
                 .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0, 0), m_robotDrive));
+            }
+            else if(rotate.getSelected().equals(AutoRotate.None)) {
+                return new InstantCommand(() -> m_hiArm.moveToPosition(185), m_hiArm) //Normal Cone
+                    .andThen(() -> m_hiArm.moveRollers(0.5))
+                    .andThen(new WaitUntilCommand(m_hiArm::atPoint))
+                    .andThen(() -> m_hiArm.moveRollers(-0.4), m_hiArm)
+                    .andThen(new WaitCommand(1))
+                    .andThen(m_hiArm::stopRollers)
+                    .andThen(() -> m_hiArm.moveToPosition(0), m_hiArm)
+                    .andThen(new WaitUntilCommand(m_hiArm::atPoint))
+                    .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(-0.6, -0.6), m_robotDrive)
+                        .until(() -> m_robotDrive.getPose().minus(new Pose2d(-SmartDashboard.getNumber("Normal Auto Distance", AutoConstants.normalAutoDistance), 0, new Rotation2d(0))).getX() <= 0))
+                    .andThen(new RunCommand(() -> m_robotDrive.tankMetersPerSecond(0, 0), m_robotDrive));
+            }
+            else {
+                return new RunCommand(null);
+            }
         }
     }
     else {
@@ -330,6 +366,12 @@ public class RobotContainer {
     public enum AutoPiece {
         Cube,
         Cone
+    }
+
+    public enum AutoRotate {
+        C,
+        CC,
+        None
     }
 
     public void setBrakeMode(IdleMode mode) {
